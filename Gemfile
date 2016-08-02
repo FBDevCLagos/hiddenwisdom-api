@@ -1,17 +1,26 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
 
-gem 'rails', '4.2.5'
+gem "rails", "4.2.5"
 
-gem 'rails-api'
+gem "rails-api"
+gem "faraday"
+gem "figaro"
+gem "jwt"
+gem "active_model_serializers"
 
-gem 'spring', :group => :development
-
-
-gem 'sqlite3'
-
-
-
+group :development, :test do
+  gem "pry"
+  gem "spring"
+  gem "sqlite3"
+  gem "rspec-rails"
+  gem "factory_girl_rails"
+  gem "database_cleaner"
+  gem "shoulda-matchers", "~> 3.1"
+  gem "simplecov"
+  gem "coveralls", require: false
+  gem "faker"
+end
 # To use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
