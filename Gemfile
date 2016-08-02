@@ -21,9 +21,6 @@ group :development, :test do
   gem "coveralls", require: false
   gem "faker"
 end
-
-
-
 # To use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
