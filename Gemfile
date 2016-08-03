@@ -9,6 +9,11 @@ gem "figaro"
 gem "jwt"
 gem "active_model_serializers"
 
+group :production do
+  gem "rails_12factor"
+  gem "pg"
+end
+
 group :development, :test do
   gem "pry"
   gem "spring"
