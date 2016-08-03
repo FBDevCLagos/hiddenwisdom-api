@@ -1,0 +1,15 @@
+{
+  "name": "hiddenwisdom-api",
+  "scripts": {
+  },
+  "env": {
+  },
+  "formation": {
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+
+  ]
+}
