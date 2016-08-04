@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
-  namespace :api, path: "/", default: { format: :json } do
-    scope module: :v1 do
-      
+  namespace :api, default: { format: :json } do
+    namespace :v1 do
+      post "/auth/login", to: "auth#login"
+      get "/auth/logout", to: "auth#logout"
     end
   end
 end
