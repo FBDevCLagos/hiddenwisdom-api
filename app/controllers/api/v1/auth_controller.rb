@@ -1,10 +1,9 @@
 module Api
   module V1
     class AuthController < ApplicationController
-      # before_action :authenticate, only: :logout
+      before_action :authenticate, only: :logout
 
       def login
-        # user = User.find_by(fb_id: auth_params[:fb_id])
         user = User.find_or_create_by(fb_id: auth_params[:fb_id]) do |user|
           user.username =  auth_params[:username]
           user.first_name =  auth_params[:first_name]
@@ -14,7 +13,7 @@ module Api
 
         if user.errors.messages.empty?
           token = Authenticate.create_token(fb_id: user.fb_id, email: user.email)
-          render json: { token: token, user: user }, status: 200
+          render json: { token: token }, status: 200
         else
           render json: { Error: user.errors.messages }, status: 422
         end
