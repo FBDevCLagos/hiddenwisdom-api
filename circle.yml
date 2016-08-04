@@ -1,0 +1,7 @@
+ dependencies:
+  post:
+    - gem install mime-types-data -v '3.2016.0221'
+
+machine:
+  ruby:
+    version: 2.2.3
