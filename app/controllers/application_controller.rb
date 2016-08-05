@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::API
+  attr_reader :current_user, :token
 
   def no_route_found
     found = { Error: "The end point you requested does not exist.",
@@ -7,10 +8,10 @@ class ApplicationController < ActionController::API
   end
 
   def authenticate
-    token = request.headers["HTTP_AUTHORIZATION"]
+    @token = request.headers["HTTP_AUTHORIZATION"]
     unless token_has_expired(token)
-      status, payload = API::V1::Authenticate.decode_token(token)
-      get_user(status, payload)
+      status, payload = Api::V1::Authenticate.decode_token(token)
+      set_payload(status, payload)
     else
       render json: { Error: "Token has expired, please login again" }, status: 401
     end
@@ -32,7 +33,7 @@ class ApplicationController < ActionController::API
   def set_payload(status, payload)
     if status
       user = payload
-      @current_user = User.where(fb_id: user["fb_id"]).first
+      @current_user = User.find_by(fb_id: user["fb_id"])
       activate(@current_user)
     else
       render json: payload, status: 401
