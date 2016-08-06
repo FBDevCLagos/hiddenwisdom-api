@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
 
 
   def self.find_or_create_user(auth_params)
-     User.find_or_create_by(fb_id: auth_params[:fb_id]) do |user|
+     find_or_create_by(fb_id: auth_params[:fb_id]) do |user|
       user.username =  auth_params[:username]
       user.first_name =  auth_params[:first_name]
       user.last_name =  auth_params[:last_name]
