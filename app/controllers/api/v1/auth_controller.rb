@@ -16,7 +16,6 @@ module Api
       end
 
       def logout
-        user = User.find(current_user.id)
         ExpiredToken.create(token: token)
         render json: { Status: "Logged out" }, status: 200
       end
