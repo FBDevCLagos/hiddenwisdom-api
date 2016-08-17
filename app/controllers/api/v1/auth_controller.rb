@@ -6,8 +6,8 @@ module Api
       def login
         uri = "https://graph.facebook.com/me"
         parameter = {
-          fields: "id,name,email",
-          access_token: params[:access_token]
+          fields: "id,name,email,first_name,last_name",
+          access_token: auth_params[:access_token]
         }
 
         http_client = Http.new(uri)
@@ -22,6 +22,10 @@ module Api
       end
 
       private
+      def auth_params
+        params.permit(:access_token)
+      end
+
       def authenticate_user(response, status)
         if status == "200"
           user = User.find_or_create_user(response)
