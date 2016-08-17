@@ -25,11 +25,8 @@ module Api
       def authenticate_user(response, status)
         if status == "200"
           user = User.find_or_create_user(response)
-          token = Authenticate.create_token(
-            fb_id: user.fb_id,
-            email: user.email
-          )
-          render json: {token: token}, status 200
+          token = Authenticate.create_token(fb_id: user.fb_id,email: user.email)
+          render json: { token: token }, status: 200
         else
           render json: { error: response["error"]["message"] }
         end
