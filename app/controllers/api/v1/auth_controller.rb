@@ -4,15 +4,15 @@ module Api
       before_action :authenticate, only: :logout
 
       def login
-        uri = "https://graph.facebook.com/me"
-        parameter = {
-          fields: "id,name,email,first_name,last_name",
+        parameters = {
+          fields: FIELDS,
           access_token: auth_params[:access_token]
         }
 
-        http_client = Http.new(uri)
-        response, status = http_client.get_request(parameter)
-        authenticate_user(response, status)
+        http_client = Http.new(FB_URL)
+        response, response_status = http_client.get_request(parameters)
+        message, status =  authenticate_user(response, response_status)
+        render json: message, status: status
       end
 
       def logout
@@ -26,13 +26,12 @@ module Api
       end
 
       def authenticate_user(response, status)
-        if status == "200"
-          user = User.find_or_create_user(response)
-          token = Authenticate.create_token(fb_id: user.fb_id,email: user.email)
-          render json: { token: token }, status: 200
-        else
-          render json: { error: response["error"]["message"] }
-        end
+        return(
+          [{ error: response["error"]["message"] }, 401]
+        ) unless status == "200"
+        user = User.find_or_create_user(response)
+        token = Authenticate.create_token(fb_id: user.fb_id,email: user.email)
+        [{ token: token }, 200]
       end
     end
   end
