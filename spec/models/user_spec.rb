@@ -8,7 +8,7 @@ RSpec.describe User, type: :model do
       context "when a new user is being created" do
         it "increases user record by 1" do
           expect do
-            User.find_or_create_user(user_attributes)
+            User.create(user_attributes)
           end.to change(User, :count).by 1
         end
 

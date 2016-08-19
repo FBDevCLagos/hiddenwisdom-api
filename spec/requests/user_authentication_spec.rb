@@ -3,12 +3,16 @@ require "rails_helper"
 RSpec.describe "User Authentication", type: :request do
 
   context "when trying to create a user" do
-    before(:all) do
-      post "/api/v1/auth/login", attributes_for(:user)
-    end
-
     it "returns an auth token" do
-      expect(json["token"]).to be_truthy
+      VCR.use_cassette("synopsis") do
+        token = "EAAH6msXVZCB0BAHqwjgc829cZAZAg6Ymua77S9rkmkLDvr701mavIxjZBsGnihhJ5roGcY2vTCWb8nmi78LNk4NmNkgAuSK660oHmWkKNdXRAIIPy7qDEugpt78VvGvzzpFeOxc2t9xsZBN4viopXh2utRfIZB1WEZD"
+        post "/api/v1/auth/login", access_token: token
+        expect(json["token"]).to be_truthy
+        returned_user = json["user"]
+        user = User.find_by id: returned_user["id"]
+        expect(json["user"]).to be_truthy
+        expect(user.first_name).to eql returned_user["first_name"]
+      end
     end
 
   end

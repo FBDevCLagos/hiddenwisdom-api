@@ -7,6 +7,8 @@ gem "faraday"
 gem "figaro"
 gem "jwt"
 gem "active_model_serializers"
+gem "doorkeeper"
+gem "doorkeeper-jwt"
 
 group :production do
   gem "rails_12factor"
@@ -24,6 +26,8 @@ group :development, :test do
   gem "simplecov"
   gem "coveralls", require: false
   gem "faker"
+  gem "vcr"
+  gem "webmock"
 end
 # To use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

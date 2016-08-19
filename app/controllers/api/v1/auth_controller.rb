@@ -31,7 +31,7 @@ module Api
         ) unless status == "200"
         user = User.find_or_create_user(response)
         token = Authenticate.create_token(fb_id: user.fb_id,email: user.email)
-        [{ token: token }, 200]
+        [{ token: token, user: user }, 200]
       end
     end
   end
