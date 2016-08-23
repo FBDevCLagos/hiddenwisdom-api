@@ -14,7 +14,31 @@ RSpec.describe "User Authentication", type: :request do
         expect(user.first_name).to eql returned_user["first_name"]
       end
     end
+  end
 
+  context "when token is invalid" do
+    it "returns an 401 error" do
+      VCR.use_cassette("token_invalid") do
+        token = "giberrish"
+        post "/api/v1/auth/login", access_token: token
+        expect(response).to have_http_status(401)
+        expect(json["token"]).to be_nil
+        expect(json["error"]).to eql("Invalid OAuth access token.")
+
+      end
+    end
+  end
+
+  context "when token can't be decrypted" do
+    it "returns an auth token" do
+      VCR.use_cassette("token_undecryptable") do
+        token = "EAAH6msXVZCB0BAHqwjgc829cZAZAgw6Ymua77S9rkmkLDvr701mavIxjZBsGnihhJ5roGcY2vTCWb8nmi78LNk4NmNkgAuSK660oHmWkKNdXRAIIPy7qDEugpt78VvGvzzpFeOxc2t9xsZBN4viopXh2utRfIZB1WEZD"
+        post "/api/v1/auth/login", access_token: token
+        expect(response).to have_http_status(401)
+        expect(json["token"]).to be_nil
+        expect(json["error"]).to eql("The access token could not be decrypted")
+      end
+    end
   end
 
   context "when logging out " do

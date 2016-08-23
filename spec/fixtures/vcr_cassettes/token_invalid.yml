@@ -1,0 +1,52 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://graph.facebook.com/me?access_token=giberrish&fields=id,email,first_name,last_name
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - graph.facebook.com
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      Www-Authenticate:
+      - OAuth "Facebook Platform" "invalid_token" "Invalid OAuth access token."
+      Access-Control-Allow-Origin:
+      - "*"
+      Pragma:
+      - no-cache
+      Cache-Control:
+      - no-store
+      Expires:
+      - Sat, 01 Jan 2000 00:00:00 GMT
+      Content-Type:
+      - application/json; charset=UTF-8
+      X-Fb-Trace-Id:
+      - BmXUehE3uug
+      X-Fb-Rev:
+      - '2520541'
+      X-Fb-Debug:
+      - yT3Sc3o3YxcVTB5v7BD17b8mKPz5APwKFR1fztiF4Qq7ILYEpbBcc0ThLB5u9zoHrdvdvoBI+hONHXfW5SJSaw==
+      Date:
+      - Tue, 23 Aug 2016 13:21:01 GMT
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '113'
+    body:
+      encoding: UTF-8
+      string: '{"error":{"message":"Invalid OAuth access token.","type":"OAuthException","code":190,"fbtrace_id":"BmXUehE3uug"}}'
+    http_version: 
+  recorded_at: Tue, 23 Aug 2016 13:21:01 GMT
+recorded_with: VCR 3.0.3
