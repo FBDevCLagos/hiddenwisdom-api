@@ -59,7 +59,7 @@ RSpec.describe "User Authentication", type: :request do
     end
 
     it "inserts the token into expired token table" do
-      expect(ExpiredToken.all.map(&:token)).to include token
+      expect(ExpiredToken.find_by(token: token)).not_to be nil
     end
   end
 
