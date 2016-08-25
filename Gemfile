@@ -7,8 +7,8 @@ gem "faraday"
 gem "figaro"
 gem "jwt"
 gem "active_model_serializers"
-gem "doorkeeper"
-gem "doorkeeper-jwt"
+gem "cancancan", "~> 1.10"
+
 
 group :production do
   gem "rails_12factor"
