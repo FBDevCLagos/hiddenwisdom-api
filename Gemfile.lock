@@ -38,6 +38,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    addressable (2.4.0)
     arel (6.0.3)
     builder (3.2.2)
     coderay (1.1.1)
@@ -48,9 +49,15 @@ GEM
       term-ansicolor (~> 1.3)
       thor (~> 0.19.1)
       tins (~> 1.6.0)
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
     database_cleaner (1.5.1)
     diff-lcs (1.2.5)
     docile (1.1.5)
+    doorkeeper (4.2.0)
+      railties (>= 4.2)
+    doorkeeper-jwt (0.1.6)
+      jwt (~> 1.5.2, >= 1.5.2)
     erubis (2.7.0)
     factory_girl (4.5.0)
       activesupport (>= 3.0.0)
@@ -65,6 +72,7 @@ GEM
       thor (~> 0.14)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
+    hashdiff (0.3.0)
     i18n (0.7.0)
     json (1.8.3)
     jwt (1.5.4)
@@ -141,6 +149,7 @@ GEM
       rspec-mocks (~> 3.4.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
+    safe_yaml (1.0.4)
     shoulda-matchers (3.1.1)
       activesupport (>= 4.0.0)
     simplecov (0.12.0)
@@ -165,6 +174,11 @@ GEM
     tins (1.6.0)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
+    vcr (3.0.3)
+    webmock (2.1.0)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff
 
 PLATFORMS
   ruby
@@ -173,6 +187,8 @@ DEPENDENCIES
   active_model_serializers
   coveralls
   database_cleaner
+  doorkeeper
+  doorkeeper-jwt
   factory_girl_rails
   faker
   faraday
@@ -188,6 +204,11 @@ DEPENDENCIES
   simplecov
   spring
   sqlite3
+  vcr
+  webmock
+
+RUBY VERSION
+   ruby 2.2.3p173
 
 BUNDLED WITH
-   1.11.2
+   1.12.5
