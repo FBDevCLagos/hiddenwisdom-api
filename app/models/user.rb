@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  has_many :proverbs
+  
   validates :email, :fb_id, :first_name, :last_name, presence: true
   validates :email, uniqueness: true
 
