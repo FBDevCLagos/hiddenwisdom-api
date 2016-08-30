@@ -5,7 +5,7 @@ module Api
         ProverbsApi::Application.config.secret_token
       end
 
-      def self.create_token(user_info, exp = Time.zone.now.to_i + 12 * 3600 )
+      def self.create_token(user_info, exp = Time.zone.now.to_i + 12 * 3600)
         user_info[:exp] = exp
         JWT.encode user_info, secret, "HS512"
       end

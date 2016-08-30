@@ -1,8 +1,6 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe Api::V1::ProverbsController, type: :request do
-
-
   let(:user) { create(:user) }
   let(:valid_attributes) { build(:proverb).attributes }
   let(:invalid_attributes) { build(:proverb, :invalid).attributes }
@@ -31,7 +29,7 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
   describe "GET with bad id" do
     it "returns not found error for ids that do not exits" do
       get "/api/v1/proverbs/100", {}, valid_session
-      expect(json).to eq({'Error'=> 'Resource not found'})
+      expect(json).to eq("Error" => "Resource not found")
       expect(response).to have_http_status(404)
     end
   end
@@ -39,14 +37,14 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
   describe "POST #create" do
     context "with valid params" do
       it "creates a new Proverb" do
-        expect {
-          post "/api/v1/proverbs/", {:proverb => valid_attributes}, valid_session
-        }.to change(Proverb, :count).by(1)
+        expect do
+          post "/api/v1/proverbs/", { proverb: valid_attributes }, valid_session
+        end.to change(Proverb, :count).by(1)
         expect(response).to have_http_status(201)
       end
 
       it "assigns a newly created proverb as @proverb" do
-        post "/api/v1/proverbs/", {:proverb => valid_attributes}, valid_session
+        post "/api/v1/proverbs/", { proverb: valid_attributes }, valid_session
         expect(assigns(:proverb)).to be_a(Proverb)
         expect(assigns(:proverb)).to be_persisted
         expect(response).to have_http_status(201)
@@ -55,7 +53,7 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
 
     context "with invalid params" do
       it "assigns a newly created but unsaved proverb as @proverb" do
-        post "/api/v1/proverbs/", {:proverb => invalid_attributes}, valid_session
+        post "/api/v1/proverbs/", { proverb: invalid_attributes }, valid_session
         expect(assigns(:proverb)).to be_a_new(Proverb)
       end
     end
@@ -63,11 +61,11 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
 
   describe "PUT #update" do
     context "with valid params" do
-      let(:new_attributes) { { "body" => "This is a new proverb body", "language" => "en" }}
+      let(:new_attributes) { { "body" => "This is a new proverb body", "language" => "en" } }
 
       it "updates the requested proverb" do
         proverb = Proverb.create! valid_attributes
-        put "/api/v1/proverbs/#{proverb.id}", {:proverb => new_attributes}, valid_session
+        put "/api/v1/proverbs/#{proverb.id}", { proverb: new_attributes }, valid_session
         proverb.reload
         expect(assigns(:proverb).body).to eq("This is a new proverb body")
         expect(response).to have_http_status(200)
@@ -75,7 +73,7 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
 
       it "assigns the requested proverb as @proverb" do
         proverb = Proverb.create! valid_attributes
-        put "/api/v1/proverbs/#{proverb.id}", {:proverb => valid_attributes}, valid_session
+        put "/api/v1/proverbs/#{proverb.id}", { proverb: valid_attributes }, valid_session
         expect(assigns(:proverb)).to eq(proverb)
         expect(response).to have_http_status(200)
       end
@@ -84,7 +82,7 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
     context "with invalid params" do
       it "assigns the proverb as @proverb" do
         proverb = Proverb.create! valid_attributes
-        put "/api/v1/proverbs/#{proverb.id}", {:proverb => invalid_attributes}, valid_session
+        put "/api/v1/proverbs/#{proverb.id}", { proverb: invalid_attributes }, valid_session
         expect(assigns(:proverb)).to eq(proverb)
         expect(response).to have_http_status(422)
       end
@@ -94,9 +92,9 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
   describe "DELETE #destroy" do
     it "destroys the requested proverb" do
       proverb = Proverb.create! valid_attributes
-      expect {
+      expect do
         delete "/api/v1/proverbs/#{proverb.id}", {}, valid_session
-      }.to change(Proverb, :count).by(-1)
+      end.to change(Proverb, :count).by(-1)
       expect(response).to have_http_status(204)
     end
 

@@ -12,7 +12,6 @@ module Helpers
   def login(user)
     token = token_generator(user)
     { "format" => :json,
-      "AUTHORIZATION" => token
-      }
+      "AUTHORIZATION" => token }
   end
 end

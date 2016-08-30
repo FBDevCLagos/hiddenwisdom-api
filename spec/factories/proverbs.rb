@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :proverb do
-    body {Faker::Lorem.paragraphs}
+    body { Faker::Lorem.paragraphs }
     language "en"
     user
 

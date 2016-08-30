@@ -51,13 +51,13 @@ module Api
 
       private
 
-        def set_proverb
-          @proverb = Proverb.find(params[:id])
-        end
+      def set_proverb
+        @proverb = Proverb.find(params[:id])
+      end
 
-        def proverb_params
-          params.require(:proverb).permit(:language, :body, :root)
-        end
+      def proverb_params
+        params.require(:proverb).permit(:language, :body, :root)
+      end
     end
   end
 end

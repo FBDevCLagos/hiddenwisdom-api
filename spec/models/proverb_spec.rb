@@ -1,18 +1,17 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe Proverb, type: :model do
-
   describe "validation" do
-    it{ is_expected.to validate_presence_of(:body) }
-    it{ is_expected.to validate_presence_of(:language) }
+    it { is_expected.to validate_presence_of(:body) }
+    it { is_expected.to validate_presence_of(:language) }
     it { should validate_presence_of :user }
   end
 
   let(:proverb) { create(:proverb) }
-  let(:translation) {create(:proverb, root: proverb)}
+  let(:translation) { create(:proverb, root: proverb) }
 
-  it{ is_expected.to respond_to(:root) }
-  it{ is_expected.to respond_to(:translations) }
+  it { is_expected.to respond_to(:root) }
+  it { is_expected.to respond_to(:translations) }
 
   it "should return a translation for proverb" do
     expect(proverb.translations).to eq [translation]

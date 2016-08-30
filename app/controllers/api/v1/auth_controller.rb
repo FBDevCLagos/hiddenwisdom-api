@@ -11,7 +11,7 @@ module Api
 
         http_client = Http.new(FB_URL)
         response, response_status = http_client.get_request(parameters)
-        message, status =  authenticate_user(response, response_status)
+        message, status = authenticate_user(response, response_status)
         render json: message, status: status
       end
 
@@ -21,6 +21,7 @@ module Api
       end
 
       private
+
       def auth_params
         params.permit(:access_token)
       end
@@ -30,7 +31,7 @@ module Api
           [{ error: response["error"]["message"] }, 401]
         ) unless status == "200"
         user = User.find_or_create_user(response)
-        token = Authenticate.create_token(fb_id: user.fb_id,email: user.email)
+        token = Authenticate.create_token(fb_id: user.fb_id, email: user.email)
         [{ token: token, user: user }, 200]
       end
     end

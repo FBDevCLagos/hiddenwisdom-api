@@ -6,5 +6,4 @@ FactoryGirl.define do
     last_name { Faker::Name.last_name }
     fb_id Faker::Number.digit
   end
-
 end
