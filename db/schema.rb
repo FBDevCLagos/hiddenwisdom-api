@@ -23,10 +23,13 @@ ActiveRecord::Schema.define(version: 20160828151745) do
     t.string   "body"
     t.string   "language"
     t.string   "status",     default: "unapproved"
+    t.integer  "root_id",    default: 0
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
     t.integer  "user_id"
   end
+
+  add_index "proverbs", ["root_id"], name: "index_proverbs_on_root_id"
 
   create_table "users", force: :cascade do |t|
     t.string   "email"

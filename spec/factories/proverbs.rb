@@ -2,8 +2,9 @@ FactoryGirl.define do
   factory :proverb do
     body {Faker::Lorem.paragraphs}
     language "en"
+    user
 
-    factory :bad_proverb do
+    trait :bad_proverb do
       body " "
       language "en"
     end

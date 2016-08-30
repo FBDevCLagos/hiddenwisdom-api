@@ -4,6 +4,7 @@ class CreateProverbs < ActiveRecord::Migration
       t.string :body
       t.string :language
       t.string :status, default: "unapproved"
+      t.references :root, index: true, foreign_key: true, default: 0
 
       t.timestamps null: false
     end
