@@ -1,6 +1,10 @@
 class ApplicationController < ActionController::API
   include CanCan::ControllerAdditions
 
+  rescue_from ActiveRecord::RecordNotFound do
+    render json: {Error: "Resource not found"}, status: 404
+  end
+
   attr_reader :current_user, :token
 
   def no_route_found

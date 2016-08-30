@@ -4,7 +4,7 @@ FactoryGirl.define do
     language "en"
     user
 
-    trait :bad_proverb do
+    trait :invalid do
       body " "
       language "en"
     end

@@ -4,15 +4,17 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
 
 
   let(:user) { create(:user) }
-  let(:valid_attributes) { {"body" => "This is a proverb", "language" => "en", user: user} }
-  let(:invalid_attributes) { {"body" => " ", "language" => "en"} }
+  let(:valid_attributes) { build(:proverb).attributes }
+  let(:invalid_attributes) { build(:proverb, :invalid).attributes }
   let!(:valid_session) { login(user) }
 
   describe "GET #index" do
     it "assigns all proverbs as @proverbs" do
       proverb = Proverb.create! valid_attributes
       get "/api/v1/proverbs", {}, valid_session
-      expect(assigns(:proverbs)).to eq([proverb])
+      result = proverb.attributes
+      expect(JSON.parse(response.body)[0]["body"]).to eq(result["body"])
+      expect(JSON.parse(response.body)[0]["language"]).to eq(result["language"])
       expect(response).to have_http_status(200)
     end
   end
@@ -26,27 +28,10 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
     end
   end
 
-  describe "GET #new" do
-    it "assigns a new proverb as @proverb" do
-      get "/api/v1/proverbs/new", {}, valid_session
-      expect(assigns(:proverb)).to be_a_new(Proverb)
-      expect(response).to have_http_status(200)
-    end
-  end
-
-  describe "GET #edit" do
-    it "assigns the requested proverb as @proverb" do
-      proverb = Proverb.create! valid_attributes
-      get "/api/v1/proverbs/#{proverb.id}/edit", {}, valid_session
-      expect(assigns(:proverb)).to eq(proverb)
-      expect(response).to have_http_status(200)
-    end
-  end
-
   describe "GET with bad id" do
     it "returns not found error for ids that do not exits" do
       get "/api/v1/proverbs/100", {}, valid_session
-      expect(json).to eq({'Error'=> 'Proverb with id 100 was not found'})
+      expect(json).to eq({'Error'=> 'Resource not found'})
       expect(response).to have_http_status(404)
     end
   end

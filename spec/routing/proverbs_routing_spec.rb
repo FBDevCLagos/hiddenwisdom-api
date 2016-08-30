@@ -7,16 +7,8 @@ RSpec.describe Api::V1::ProverbsController, type: :routing do
       expect(:get => "api/v1/proverbs").to route_to({"default" => {"format" => :json}, "controller" => "api/v1/proverbs", "action" => "index"})
     end
 
-    it "routes to #new" do
-      expect(:get => "api/v1/proverbs/new").to route_to({"default" => {"format" => :json}, "controller" => "api/v1/proverbs", "action" => "new"})
-    end
-
     it "routes to #show" do
       expect(:get => "api/v1/proverbs/1").to route_to({"default" => {"format" => :json}, "controller" => "api/v1/proverbs", "action" => "show", "id" => "1"})
-    end
-
-    it "routes to #edit" do
-      expect(:get => "api/v1/proverbs/1/edit").to route_to({"default" => {"format" => :json}, "controller" => "api/v1/proverbs", "action" => "edit", "id" => "1"})
     end
 
     it "routes to #create" do

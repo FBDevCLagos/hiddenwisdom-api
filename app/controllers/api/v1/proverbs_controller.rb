@@ -1,29 +1,21 @@
 module Api
   module V1
     class ProverbsController < ApplicationController
-      before_action :set_proverb, only: [:show, :update, :destroy, :edit]
+      before_action :set_proverb, only: [:show, :update, :destroy]
       before_action :authenticate
 
       # GET /proverbs
       # GET /proverbs.json
       def index
-        @proverbs = Proverb.all
+        proverbs = Proverb.all
 
-        render json: @proverbs, status: :ok
+        render json: proverbs, status: :ok, root: false
       end
 
       # GET /proverbs/1
       # GET /proverbs/1.json
       def show
         render json: @proverb, status: :ok
-      end
-
-      def edit
-        @proverb
-      end
-
-      def new
-        @proverb = Proverb.new
       end
 
       # POST /proverbs
@@ -61,12 +53,10 @@ module Api
 
         def set_proverb
           @proverb = Proverb.find(params[:id])
-          rescue ActiveRecord::RecordNotFound
-            render json: {Error: "Proverb with id #{params[:id]} was not found"}, status: 404
         end
 
         def proverb_params
-          params.require(:proverb).permit(:language, :body)
+          params.require(:proverb).permit(:language, :body, :root)
         end
     end
   end
