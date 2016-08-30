@@ -104,4 +104,14 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
       expect(response).to have_http_status(204)
     end
   end
+
+  describe "GET #translations" do
+    it "gets all translations of the selected proverb" do
+      proverb = create(:proverb)
+      translation = create(:proverb, root: proverb, language: "lt")
+      get "/api/v1/proverbs/#{proverb.id}/translations", {}, valid_session
+      expect(JSON.parse(response.body)[0]["body"]).to eq(translation.attributes["body"])
+      expect(response).to have_http_status(200)
+    end
+  end
 end

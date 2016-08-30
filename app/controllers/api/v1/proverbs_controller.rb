@@ -1,7 +1,7 @@
 module Api
   module V1
     class ProverbsController < ApplicationController
-      before_action :set_proverb, only: [:show, :update, :destroy]
+      before_action :set_proverb, only: [:show, :update, :destroy, :translations]
       before_action :authenticate
 
       # GET /proverbs
@@ -47,6 +47,11 @@ module Api
       def destroy
         @proverb.destroy
         head :no_content
+      end
+
+      def translations
+        all_tranlations = @proverb.translations
+        render json: all_tranlations, status: :ok, root: false
       end
 
       private
