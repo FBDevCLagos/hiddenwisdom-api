@@ -23,7 +23,7 @@ module Api
       def create
         data = proverb_params.merge!(user_id: @current_user.id)
         @proverb = Proverb.create(data)
-        if @proverb
+        if @proverb.id
           render json: @proverb, status: :created
         else
           render json: @proverb.errors, status: :unprocessable_entity
@@ -33,8 +33,6 @@ module Api
       # PATCH/PUT /proverbs/1
       # PATCH/PUT /proverbs/1.json
       def update
-        # @proverb = Proverb.find(params[:id])
-
         if @proverb.update(proverb_params)
           render json: @proverb, status: :ok
         else
