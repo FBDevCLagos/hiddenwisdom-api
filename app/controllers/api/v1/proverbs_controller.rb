@@ -9,7 +9,7 @@ module Api
       def index
         proverbs = Proverb.all
 
-        render json: proverbs, status: :ok, root: false
+        render json: proverbs, status: :ok
       end
 
       # GET /proverbs/1

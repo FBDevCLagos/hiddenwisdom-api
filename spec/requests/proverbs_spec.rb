@@ -11,8 +11,8 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
       proverb = Proverb.create! valid_attributes
       get "/api/v1/proverbs", {}, valid_session
       result = proverb.attributes
-      expect(JSON.parse(response.body)[0]["body"]).to eq(result["body"])
-      expect(JSON.parse(response.body)[0]["language"]).to eq(result["language"])
+      expect(JSON.parse(response.body)["proverbs"][0]["body"]).to eq(result["body"])
+      expect(JSON.parse(response.body)["proverbs"][0]["language"]).to eq(result["language"])
       expect(response).to have_http_status(200)
     end
   end
