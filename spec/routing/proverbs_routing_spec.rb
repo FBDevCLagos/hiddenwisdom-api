@@ -25,9 +25,5 @@ RSpec.describe Api::V1::ProverbsController, type: :routing do
     it "routes to #destroy" do
       expect(delete: "api/v1/proverbs/1").to route_to("default" => { "format" => :json }, controller: "api/v1/proverbs", "action" => "destroy", "id" => "1")
     end
-
-    it "routes to #translations" do
-      expect(get: "api/v1/proverbs/1/translations").to route_to("default" => { "format" => :json }, controller: "api/v1/proverbs", "action" => "translations", "id" => "1")
-    end
   end
 end
