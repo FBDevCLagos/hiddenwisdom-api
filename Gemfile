@@ -8,6 +8,7 @@ gem "figaro"
 gem "jwt"
 gem "active_model_serializers"
 gem "cancancan", "~> 1.10"
+gem "faker"
 
 group :production do
   gem "rails_12factor"
@@ -24,7 +25,6 @@ group :development, :test do
   gem "shoulda-matchers", "~> 3.1"
   gem "simplecov"
   gem "coveralls", require: false
-  gem "faker"
   gem "vcr"
   gem "webmock"
 end
