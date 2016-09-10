@@ -1,6 +1,10 @@
 class ApplicationController < ActionController::API
   include CanCan::ControllerAdditions
 
+  rescue_from ActiveRecord::RecordNotFound do
+    render json: { Error: "Resource not found" }, status: 404
+  end
+
   attr_reader :current_user, :token
 
   def no_route_found
@@ -11,11 +15,11 @@ class ApplicationController < ActionController::API
 
   def authenticate
     @token = request.headers["HTTP_AUTHORIZATION"]
-    unless token_has_expired(token)
+    if token_has_expired(token)
+      render json: { Error: "Token has expired, please login again" }, status: 401
+    else
       status, payload = Api::V1::Authenticate.decode_token(token)
       set_payload(status, payload)
-    else
-      render json: { Error: "Token has expired, please login again" }, status: 401
     end
   end
 

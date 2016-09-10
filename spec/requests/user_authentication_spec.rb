@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "User Authentication", type: :request do
-
   context "when trying to create a user" do
     it "returns an auth token" do
       VCR.use_cassette("synopsis") do
@@ -24,7 +23,6 @@ RSpec.describe "User Authentication", type: :request do
         expect(response).to have_http_status(401)
         expect(json["token"]).to be_nil
         expect(json["error"]).to eql("Invalid OAuth access token.")
-
       end
     end
   end
@@ -48,8 +46,7 @@ RSpec.describe "User Authentication", type: :request do
 
     let(:header) do
       { "Content-Type" => "application/json",
-        "AUTHORIZATION" => token
-       }
+        "AUTHORIZATION" => token }
     end
 
     let!(:req) { get "/api/v1/auth/logout", {}, header }
@@ -62,5 +59,4 @@ RSpec.describe "User Authentication", type: :request do
       expect(ExpiredToken.find_by(token: token)).not_to be nil
     end
   end
-
 end
