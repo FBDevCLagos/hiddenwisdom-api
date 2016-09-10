@@ -2,7 +2,7 @@ module Api
   module V1
     class ProverbsController < ApplicationController
       before_action :set_proverb, only: [:show, :update, :destroy, :translations]
-      before_action :authenticate
+      before_action :authenticate, except: [:index, :show]
 
       def index
         proverbs = Proverb.all
