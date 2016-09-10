@@ -16,8 +16,8 @@ module Api
 
       def create
         data = proverb_params.merge!(user_id: @current_user.id)
-        @proverb = Proverb.create(data)
-        if @proverb.id
+        @proverb = Proverb.new(data)
+        if @proverb.save
           render json: @proverb, status: :created
         else
           render json: @proverb.errors, status: :unprocessable_entity
@@ -44,7 +44,7 @@ module Api
       end
 
       def proverb_params
-        params.require(:proverb).permit(:language, :body, :root_id, tags:[:id, :_destroy, :name])
+        params.require(:proverb).permit(:language, :body, :root_id, :all_tags)
       end
     end
   end
