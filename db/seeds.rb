@@ -6,6 +6,8 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenglishhagenglish' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
+require 'faker'
+
 user = User.create({
   email: Faker::Internet.email,
   fb_id: Faker::Number.number(11),
