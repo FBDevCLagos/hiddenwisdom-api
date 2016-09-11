@@ -11,7 +11,6 @@ gem "active_model_serializers"
 gem "cancancan", "~> 1.10"
 gem "faker"
 gem "rack-cors", require: "rack/cors"
-
 group :production do
   gem "rails_12factor"
   gem "pg"

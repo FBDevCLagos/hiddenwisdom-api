@@ -11,8 +11,8 @@ class Proverb < ActiveRecord::Base
 
   #Getter and Setter for all_tags vertial attribute
   def all_tags=(proverb_tags)
-    self.tags = proverb_tags.split(",").map do |tag|
-      Tag.where(name: tag.strip).first_or_create!
+    self.tags = proverb_tags.map do |proverb_tag|
+      Tag.where(name: proverb_tag.strip).first_or_create!
     end
   end
 

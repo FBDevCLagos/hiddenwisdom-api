@@ -4,7 +4,7 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
   let(:user) { create(:user) }
   let!(:valid_session) { login(user) }
 
-  let(:valid_attributes) { build(:proverb).attributes }
+  let(:valid_attributes) { build(:proverb, all_tags: ["wisdom", "life"]).attributes }
   let(:invalid_attributes) { build(:proverb, :invalid).attributes }
 
   describe "GET #index" do
@@ -59,6 +59,7 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
         post "/api/v1/proverbs/", { proverb: valid_attributes }, valid_session
         expect(assigns(:proverb)).to be_a(Proverb)
         expect(assigns(:proverb)).to be_persisted
+        expect(assigns(:proverb).tags[0]).to eq "wisdom"
         expect(response).to have_http_status(201)
       end
     end
