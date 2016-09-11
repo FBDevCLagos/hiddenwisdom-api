@@ -6,6 +6,7 @@ gem "rails-api"
 gem "faraday"
 gem "figaro"
 gem "jwt"
+gem 'rack-cors', require: 'rack/cors'
 gem "active_model_serializers"
 gem "cancancan", "~> 1.10"
 gem "faker"
