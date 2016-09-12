@@ -50,15 +50,24 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
     context "with valid params" do
       it "creates a new Proverb" do
         expect do
-          post "/api/v1/proverbs/", { proverb: valid_attributes }, valid_session
+          post(
+            "/api/v1/proverbs/",
+            { proverb: valid_attributes.merge!(all_tags: ["wisdom", "life"]) },
+            valid_session
+          )
         end.to change(Proverb, :count).by(1)
         expect(response).to have_http_status(201)
       end
 
       it "assigns a newly created proverb as @proverb" do
-        post "/api/v1/proverbs/", { proverb: valid_attributes }, valid_session
+        post(
+          "/api/v1/proverbs/",
+          { proverb: valid_attributes.merge!(all_tags: ["wisdom", "life"]) },
+          valid_session
+        )
         expect(assigns(:proverb)).to be_a(Proverb)
         expect(assigns(:proverb)).to be_persisted
+        expect(assigns(:proverb).tags[0].name).to eq "wisdom"
         expect(response).to have_http_status(201)
       end
     end

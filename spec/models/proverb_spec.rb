@@ -7,6 +7,11 @@ RSpec.describe Proverb, type: :model do
     it { should validate_presence_of :user }
   end
 
+  describe "associations" do
+    it { is_expected.to have_many :taggings }
+    it { is_expected.to have_many :tags }
+  end
+
   let(:proverb) { create(:proverb) }
   let(:translation) { create(:proverb, root: proverb) }
 
