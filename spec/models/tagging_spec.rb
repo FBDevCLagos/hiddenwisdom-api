@@ -1,5 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe Tagging, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe "instance methods" do
+    it { is_expected.to respond_to :tag_id }
+    it { is_expected.to respond_to :proverb_id }
+  end
+
+  describe "associations" do
+    it { is_expected.to belong_to :proverb }
+    it { is_expected.to belong_to :tag }
+  end
 end
