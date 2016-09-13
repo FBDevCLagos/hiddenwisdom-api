@@ -5,5 +5,10 @@ Rails.application.routes.draw do
       post "/auth/login", to: "auth#login"
       get "/auth/logout", to: "auth#logout"
     end
+
+    namespace :v2 do
+      post "/queries", to:"graph#process_query"
+    end
   end
+  mount GraphiQL::Rails::Engine, at: "/graphiql", graphql_path: "/api/v2/queries"
 end
