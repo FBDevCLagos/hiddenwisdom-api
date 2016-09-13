@@ -2,6 +2,7 @@ module Api
   module V1
     class ProverbsController < ApplicationController
       before_action :set_proverb, only: [:show, :update, :destroy, :translations]
+      before_action :check_tags, only: [:create]
       before_action :authenticate, except: [:index, :show]
 
       def index
@@ -44,6 +45,12 @@ module Api
 
       def proverb_params
         params.require(:proverb).permit(:language, :body, :root_id, all_tags: [])
+      end
+
+      def check_tags
+        unless proverb_params["all_tags"] && proverb_params["all_tags"].is_a?(Array)
+          render json: { tag_error: "tags must be in an array" }.to_json, status: 401
+        end
       end
     end
   end
