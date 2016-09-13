@@ -69,6 +69,9 @@ GEM
       thor (~> 0.14)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
+    graphiql-rails (1.3.0)
+      rails
+    graphql (0.18.11)
     hashdiff (0.3.0)
     i18n (0.7.0)
     json (1.8.3)
@@ -192,6 +195,8 @@ DEPENDENCIES
   faker
   faraday
   figaro
+  graphiql-rails
+  graphql
   jwt
   pg
   pry-rails
