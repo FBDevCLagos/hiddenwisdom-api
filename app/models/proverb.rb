@@ -22,7 +22,7 @@ class Proverb < ActiveRecord::Base
   end
 
   def self.search(params)
-    query = self.eager_load(:user)
+    query = self.includes(:user)
     if params["tags"]
       query = query.joins(:tags).where(tags: {name: params["tags"].split(",")})
     end
