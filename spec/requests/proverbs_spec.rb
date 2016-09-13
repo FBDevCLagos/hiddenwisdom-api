@@ -9,17 +9,58 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
 
   describe "GET #index" do
     it "assigns all proverbs as @proverbs" do
-      proverb = create(:proverb)
+      proverb = create(:proverb, language: "english")
+      tag = create(:tag, name: "wisdom")
+      create(:tagging, proverb: proverb, tag: tag)
       translation = create(:proverb, root_id: proverb.id)
 
       get "/api/v1/proverbs", {}, valid_session
       result = proverb.attributes
-
       expect(JSON.parse(response.body)["proverbs"][0]["body"]).to eq(result["body"])
       expect(JSON.parse(response.body)["proverbs"][0]["language"]).to eq(result["language"])
       expect(JSON.parse(response.body)["proverbs"][0]["translations"][0]["body"]).to eq(translation.body)
       expect(JSON.parse(response.body)["proverbs"][0]["translations"][0]["language"]).to eq(translation.language)
       expect(response).to have_http_status(200)
+    end
+
+    describe "search" do
+      before(:each) do
+        tags = ["wisdom", "love", "life", "opportunity"]
+        languages = ["english", "yoruba", "igbo", "hausa"]
+        10.times do
+          proverb = create(:proverb, language: languages[rand(languages.length)])
+          tag = create(:tag, name: tags[rand(tags.length)])
+          create(:tagging, proverb: proverb, tag: tag)
+        end
+      end
+
+      context "when searching with complete params" do
+        it "returns proverbs that match all query params" do
+          get(
+            "/api/v1/proverbs?tag=wisdom&language=english&direction=desc&random=true",
+            {},
+            valid_session
+          )
+          JSON.parse(response.body)["proverbs"].each do |prov|
+            expect(prov["language"]).to eq "english"
+            expect(prov["tags"]).to include "wisdom"
+          end
+        end
+      end
+
+      context "when searching with only tag and language" do
+        it "returns proverbs matching the tag and language" do
+          get(
+            "/api/v1/proverbs?tag=life&language=igbo",
+            {},
+            valid_session
+          )
+          JSON.parse(response.body)["proverbs"].each do |prov|
+            expect(prov["language"]).to eq "igbo"
+            expect(prov["tags"]).to include "life"
+          end
+        end
+      end
     end
   end
 
@@ -74,15 +115,26 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
 
     context "with invalid params" do
       it "assigns a newly created but unsaved proverb as @proverb" do
-        post "/api/v1/proverbs/", { proverb: invalid_attributes }, valid_session
+        post "/api/v1/proverbs/", { proverb: invalid_attributes.merge!(all_tags: ["life"]) }, valid_session
         expect(assigns(:proverb)).to be_a_new(Proverb)
+      end
+    end
+
+    context "with invalid tags format" do
+      it "returns 'tags must be an array' error message" do
+        post(
+          "/api/v1/proverbs/",
+          { proverb: valid_attributes.merge!(all_tags: "wisdom, life") },
+          valid_session
+        )
+        expect(JSON.parse(response.body)["tag_error"]).to eq "tags must be in an array"
       end
     end
   end
 
   describe "PUT #update" do
     context "with valid params" do
-      let(:new_attributes) { { "body" => "This is a new proverb body", "language" => "en" } }
+      let(:new_attributes) { { "body" => "This is a new proverb body", "language" => "en", "all_tags" => [] } }
 
       it "updates the requested proverb" do
         proverb = create(:proverb)
