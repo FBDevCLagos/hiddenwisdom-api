@@ -20,4 +20,19 @@ class Proverb < ActiveRecord::Base
   def all_tags
     self.tags.map(&:name).join(", ")
   end
+
+  def self.search(params)
+    query = self.includes(:user)
+    if params["tags"]
+      query = query.joins(:tags).where(tags: {name: params["tags"].split(",")})
+    end
+
+    if params["language"]
+      query = query.where(language: params["language"].split(","))
+    end
+
+    ord = params["random"] ? "RANDOM()" : "id #{params["direction"]}"
+
+     query.limit(params["limit"]).order(ord).offset("#{params["offset"]}")
+  end
 end
