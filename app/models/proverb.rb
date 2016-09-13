@@ -20,4 +20,16 @@ class Proverb < ActiveRecord::Base
   def all_tags
     self.tags.map(&:name).join(", ")
   end
+
+  scope :search, lambda { |params = {}|
+    tag = params[:tag].downcase if params[:tag]
+    language = params[:language].downcase if params[:language]
+    ord = params["random"] ? "RANDOM()" : "id #{params["direction"]}"
+    set_order = ord == "id " ? "id desc" : ord
+    Proverb.joins(:tags).where(
+      "tags.name LIKE ? and lower(language) LIKE ?",
+      "%#{tag}%",
+      "%#{language}%"
+    ).order(set_order)
+  }
 end

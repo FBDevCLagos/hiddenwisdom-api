@@ -8,18 +8,43 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
   let(:invalid_attributes) { build(:proverb, :invalid).attributes }
 
   describe "GET #index" do
-    it "assigns all proverbs as @proverbs" do
-      proverb = create(:proverb)
-      translation = create(:proverb, root_id: proverb.id)
+    # it "assigns all proverbs as @proverbs" do
+    #   proverb = create(:proverb)
+    #   translation = create(:proverb, root_id: proverb.id)
+    #
+    #   get "/api/v1/proverbs", {}, valid_session
+    #   result = proverb.attributes
+    #   expect(JSON.parse(response.body)["proverbs"][0]["body"]).to eq(result["body"])
+    #   expect(JSON.parse(response.body)["proverbs"][0]["language"]).to eq(result["language"])
+    #   expect(JSON.parse(response.body)["proverbs"][0]["translations"][0]["body"]).to eq(translation.body)
+    #   expect(JSON.parse(response.body)["proverbs"][0]["translations"][0]["language"]).to eq(translation.language)
+    #   expect(response).to have_http_status(200)
+    # end
 
-      get "/api/v1/proverbs", {}, valid_session
-      result = proverb.attributes
+    describe "search" do
+      before(:all) do
+        user = create(:user)
+        3.times do |index|
+          Proverb.create({body: "test proverb #{index}", language: "english", all_tags: ["wisdom"], user_id: user.id})
+          Proverb.create({body: "test proverb #{index}", language: "igbo", all_tags: ["life", "opportunity"], user_id: user.id})
+          Proverb.create({body: "test proverb #{index}", language: "yoruba", all_tags: ["love"], user_id: user.id})
+        end
+      end
 
-      expect(JSON.parse(response.body)["proverbs"][0]["body"]).to eq(result["body"])
-      expect(JSON.parse(response.body)["proverbs"][0]["language"]).to eq(result["language"])
-      expect(JSON.parse(response.body)["proverbs"][0]["translations"][0]["body"]).to eq(translation.body)
-      expect(JSON.parse(response.body)["proverbs"][0]["translations"][0]["language"]).to eq(translation.language)
-      expect(response).to have_http_status(200)
+      context "when searching with complete params" do
+        it "returns proverbs that all query params" do
+          get(
+            "/api/v1/proverbs?tag=wisdom&language=english&direction=desc&random=true",
+            {},
+            valid_session
+          )
+          expect(JSON.parse(response.body)["proverbs"].count).to eq 6
+        end
+      end
+
+      context "when searching with only tag and language" do
+
+      end
     end
   end
 

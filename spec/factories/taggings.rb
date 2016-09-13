@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :tagging do
-    proverb nil
-tag nil
+    # proverb
+    tag
   end
 
 end

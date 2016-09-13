@@ -5,8 +5,7 @@ module Api
       before_action :authenticate, except: [:index, :show]
 
       def index
-        proverbs = Proverb.all
-
+        proverbs = Proverb.search(params)
         render json: proverbs, status: :ok
       end
 
