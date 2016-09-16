@@ -32,4 +32,12 @@ class Proverb < ActiveRecord::Base
       "%#{language}%"
     ).order(set_order)
   }
+
+  def self.paginate(params)
+    limit = params[:limit] ? params[:limit] : 20
+    page = params[:page] ? params[:page] : nil
+    offset = limit.to_i * (page.to_i - 1)
+
+    search(params).limit(limit).offset(offset)
+  end
 end
