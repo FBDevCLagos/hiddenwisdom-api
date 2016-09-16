@@ -4,8 +4,8 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
   let(:user) { create(:user) }
   let!(:valid_session) { login(user) }
 
-  let(:valid_attributes) { build(:proverb).attributes }
-  let(:invalid_attributes) { build(:proverb, :invalid).attributes }
+  let(:valid_attributes) { attributes_for(:proverb) }
+  let(:invalid_attributes) { attributes_for(:proverb, :invalid) }
 
   describe "GET #index" do
     it "assigns all proverbs as @proverbs" do
@@ -93,22 +93,60 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
         expect do
           post(
             "/api/v1/proverbs/",
-            { proverb: valid_attributes.merge!(all_tags: ["wisdom", "life"]) },
+            proverbs_with_translations_params,
             valid_session
           )
-        end.to change(Proverb, :count).by(1)
+        end.to change(Proverb, :count).by(4)
         expect(response).to have_http_status(201)
       end
 
       it "assigns a newly created proverb as @proverb" do
         post(
           "/api/v1/proverbs/",
-          { proverb: valid_attributes.merge!(all_tags: ["wisdom", "life"]) },
+          proverbs_with_translations_params,
           valid_session
         )
         expect(assigns(:proverb)).to be_a(Proverb)
         expect(assigns(:proverb)).to be_persisted
-        expect(assigns(:proverb).tags[0].name).to eq "wisdom"
+        expect(assigns(:proverb).tags[0].name).to eq "peace"
+        expect(response).to have_http_status(201)
+      end
+
+      it "creates translations in translations array" do
+        post(
+          "/api/v1/proverbs/",
+          proverbs_with_translations_params,
+          valid_session
+        )
+        expect(assigns(:proverb).translations.count).to eq 3
+        expect(assigns(:proverb).translations[0].language).to eq "igbo"
+        expect(assigns(:proverb).translations[0].tags[0].name).to eq "peace"
+        expect(response).to have_http_status(201)
+      end
+    end
+
+    context "when proverbs contain no translations" do
+      it "creates translations in translations array" do
+        post(
+          "/api/v1/proverbs/",
+          proverbs_with_empty_translations_params,
+          valid_session
+        )
+
+        expect(assigns(:proverb).translations.size).to eq 0
+        expect(response).to have_http_status(201)
+      end
+    end
+
+    context "when proverbs does not have a translations attribute" do
+      it "creates translations in translations array" do
+        post(
+          "/api/v1/proverbs/",
+          proverbs_without_translations_params,
+          valid_session
+        )
+        expect(assigns(:proverb)).to be_persisted
+        expect(assigns(:proverb).translations.size).to eq 0
         expect(response).to have_http_status(201)
       end
     end

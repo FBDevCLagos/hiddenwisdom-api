@@ -35,9 +35,9 @@ class Proverb < ActiveRecord::Base
 
   def self.paginate(params)
     limit = params[:limit] ? params[:limit] : 20
-    page = params[:page] ? params[:page] : nil
-    offset = limit.to_i * (page.to_i - 1)
-
+    page = params[:page] ? params[:page] : 0
+    # offset = limit.to_i * (page.to_i - 1)
+    offset = page == 0 ? 0 : (page.to_i - 1) * limit.to_i
     search(params).limit(limit).offset(offset)
   end
 end
