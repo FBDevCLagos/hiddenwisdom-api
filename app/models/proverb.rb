@@ -30,6 +30,14 @@ class Proverb < ActiveRecord::Base
       "tags.name LIKE ? and lower(language) LIKE ?",
       "%#{tag}%",
       "%#{language}%"
-    ).order(set_order)
+    ).order(set_order).uniq
   }
+
+  def self.paginate(params)
+    limit = params[:limit] ? params[:limit] : 20
+    page = params[:page] ? params[:page] : nil
+    offset = limit.to_i * (page.to_i - 1)
+
+    search(params).limit(limit).offset(offset)
+  end
 end
