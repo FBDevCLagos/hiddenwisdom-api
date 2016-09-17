@@ -17,10 +17,11 @@ module Api
       def create
         data = proverb_params.merge!(user_id: @current_user.id)
         @proverb = Proverb.new(data)
-        if @proverb.save
+        if valid_translation? && @proverb.save
+          create_translations
           render json: @proverb, status: :created
         else
-          render json: @proverb.errors, status: :unprocessable_entity
+          render json: { error: "proverb could not be saved" }, status: :unprocessable_entity
         end
       end
 
@@ -45,6 +46,37 @@ module Api
 
       def proverb_params
         params.require(:proverb).permit(:language, :body, :root_id, all_tags: [])
+      end
+
+      def valid_translation?
+        translations = params[:proverb][:translations]
+        if translations
+          return true if translations[0] == ""
+          translations.all? do |translation|
+            Proverb.new(translation.symbolize_keys.merge(
+              user_id: current_user.id
+            )).valid?
+          end
+        else
+          true
+        end
+      end
+
+      def create_translations
+        translations = params[:proverb][:translations]
+        tags = @proverb.tags.map(&:name)
+        if translations
+          return true if translations[0] == ""
+          translations.each do |translation|
+            Proverb.create(translation.symbolize_keys.merge(
+              root_id: @proverb.id,
+              all_tags: tags,
+              user_id: current_user.id
+            ))
+          end
+        else
+          true
+        end
       end
 
       def check_tags
