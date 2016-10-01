@@ -10,6 +10,7 @@ gem 'rack-cors', require: 'rack/cors'
 gem "active_model_serializers"
 gem "cancancan", "~> 1.10"
 gem "faker"
+gem 'globalize', '~> 5.0.0'
 
 gem "rack-cors", require: "rack/cors"
 group :production do

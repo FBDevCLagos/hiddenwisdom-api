@@ -3,11 +3,12 @@ class Proverb < ActiveRecord::Base
   belongs_to :root, class_name: "Proverb", foreign_key: "root_id"
   has_many :taggings
   has_many :tags, through: :taggings
-  validates :language, :body, :user, presence: true
+  validates :body, :user, presence: true
+  translates :body
 
-  def translations
-    Proverb.where("root_id = #{id} OR id = #{root_id}").where.not(id: id)
-  end
+  # def translations
+  #   Proverb.where("root_id = #{id} OR id = #{root_id}").where.not(id: id)
+  # end
 
   #Getter and Setter for all_tags vertial attribute
   def all_tags=(proverb_tags)
@@ -20,6 +21,17 @@ class Proverb < ActiveRecord::Base
   def all_tags
     self.tags.map(&:name).join(", ")
   end
+
+  scope :search, lambda { |params = {}|
+    tag = params[:tag].downcase if params[:tag]
+    # language = params[:language].downcase if params[:language]
+    ord = params["random"] ? "RANDOM()" : "id #{params[:direction]}"
+    set_order = ord == "id " ? "id desc" : ord
+    Proverb.joins(:tags).where(
+      "tags.name LIKE ?",
+      "%#{tag}%",
+    ).order(set_order).uniq
+  }
 
   def self.paginate(params)
     params = sanitize_search_params(params)

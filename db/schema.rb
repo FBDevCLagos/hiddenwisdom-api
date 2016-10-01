@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160910143711) do
+ActiveRecord::Schema.define(version: 20161001153238) do
 
   create_table "expired_tokens", force: :cascade do |t|
     t.string   "token"
@@ -19,9 +19,19 @@ ActiveRecord::Schema.define(version: 20160910143711) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "proverb_translations", force: :cascade do |t|
+    t.integer  "proverb_id", null: false
+    t.string   "locale",     null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string   "body"
+  end
+
+  add_index "proverb_translations", ["locale"], name: "index_proverb_translations_on_locale"
+  add_index "proverb_translations", ["proverb_id"], name: "index_proverb_translations_on_proverb_id"
+
   create_table "proverbs", force: :cascade do |t|
     t.string   "body"
-    t.string   "language"
     t.string   "status",     default: "unapproved"
     t.integer  "root_id",    default: 0
     t.datetime "created_at",                        null: false

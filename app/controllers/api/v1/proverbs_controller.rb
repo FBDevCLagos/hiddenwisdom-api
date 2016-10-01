@@ -4,6 +4,7 @@ module Api
       before_action :set_proverb, only: [:show, :update, :destroy, :translations]
       before_action :check_tags, only: [:create]
       before_action :authenticate, except: [:index, :show]
+      before_action :set_locale
 
       def index
         proverbs = Proverb.paginate(params)
@@ -17,8 +18,8 @@ module Api
       def create
         data = proverb_params.merge!(user_id: @current_user.id)
         @proverb = Proverb.new(data)
-        if valid_translation? && @proverb.save
-          create_translations
+        if @proverb.save
+          # create_translations
           render json: @proverb, status: :created
         else
           render json: { error: "proverb could not be saved" }, status: :unprocessable_entity
@@ -40,44 +41,48 @@ module Api
 
       private
 
+      def set_locale
+        I18n.locale = params[:locale] || I18n.default_locale
+      end
+
       def set_proverb
         @proverb = Proverb.find(params[:id])
       end
 
       def proverb_params
-        params.require(:proverb).permit(:language, :body, :root_id, all_tags: [])
+        params.require(:proverb).permit(:body, :root_id, all_tags: [])
       end
 
-      def valid_translation?
-        translations = params[:proverb][:translations]
-        if translations
-          return true if translations[0] == ""
-          translations.all? do |translation|
-            Proverb.new(translation.symbolize_keys.merge(
-              user_id: current_user.id
-            )).valid?
-          end
-        else
-          true
-        end
-      end
+      # def valid_translation?
+      #   translations = params[:proverb][:translations]
+      #   if translations
+      #     return true if translations[0] == ""
+      #     translations.all? do |translation|
+      #       Proverb.new(translation.symbolize_keys.merge(
+      #         user_id: current_user.id
+      #       )).valid?
+      #     end
+      #   else
+      #     true
+      #   end
+      # end
 
-      def create_translations
-        translations = params[:proverb][:translations]
-        tags = @proverb.tags.map(&:name)
-        if translations
-          return true if translations[0] == ""
-          translations.each do |translation|
-            Proverb.create(translation.symbolize_keys.merge(
-              root_id: @proverb.id,
-              all_tags: tags,
-              user_id: current_user.id
-            ))
-          end
-        else
-          true
-        end
-      end
+      # def create_translations
+      #   translations = params[:proverb][:translations]
+      #   tags = @proverb.tags.map(&:name)
+      #   if translations
+      #     return true if translations[0] == ""
+      #     translations.each do |translation|
+      #       Proverb.create(translation.symbolize_keys.merge(
+      #         root_id: @proverb.id,
+      #         all_tags: tags,
+      #         user_id: current_user.id
+      #       ))
+      #     end
+      #   else
+      #     true
+      #   end
+      # end
 
       def check_tags
         unless proverb_params["all_tags"] && proverb_params["all_tags"].is_a?(Array)
