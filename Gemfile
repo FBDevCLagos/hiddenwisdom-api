@@ -6,10 +6,11 @@ gem "rails-api"
 gem "faraday"
 gem "figaro"
 gem "jwt"
-gem 'rack-cors', require: 'rack/cors'
-gem 'active_model_serializers', '~> 0.10.0'
+gem "rack-cors", require: "rack/cors"
+gem "active_model_serializers"
 gem "cancancan", "~> 1.10"
 gem "faker"
+gem "facebook-account-kit"
 gem 'globalize', '~> 5.0.0'
 
 group :production do
@@ -29,4 +30,5 @@ group :development, :test do
   gem "coveralls", require: false
   gem "vcr"
   gem "webmock"
+  gem "rubocop"
 end

@@ -39,7 +39,8 @@ class ApplicationController < ActionController::API
   def set_payload(status, payload)
     if status
       user = payload
-      @current_user = User.find_by(fb_id: user["fb_id"])
+      @current_user = User.find_by(fb_id: user["fb_id"]) ||
+                      User.find_by(kit_id: user["kit_id"])
       activate(@current_user)
     else
       render json: payload, status: 401

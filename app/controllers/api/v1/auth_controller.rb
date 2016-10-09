@@ -4,14 +4,7 @@ module Api
       before_action :authenticate, only: :logout
 
       def login
-        parameters = {
-          fields: FIELDS,
-          access_token: auth_params[:access_token]
-        }
-
-        http_client = Http.new(FB_URL)
-        response, response_status = http_client.get_request(parameters)
-        message, status = authenticate_user(response, response_status)
+        message, status = account_kit_authentication || graph_authentication
         render json: message, status: status
       end
 
@@ -22,8 +15,23 @@ module Api
 
       private
 
-      def auth_params
-        params.permit(:access_token)
+      def account_kit_authentication
+        return false unless params[:kit_access_code]
+        account_kit = AccountKit.new(params[:kit_access_code])
+        account_kit.get_message_and_status
+      end
+
+      def graph_authentication
+        return false unless params[:access_token]
+
+        parameters = {
+          fields: FIELDS,
+          access_token: params[:access_token]
+        }
+
+        http_client = Http.new(FB_URL)
+        response, response_status = http_client.get_request(parameters)
+        message, status = authenticate_user(response, response_status)
       end
 
       def authenticate_user(response, status)

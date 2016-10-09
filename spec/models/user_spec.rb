@@ -17,14 +17,16 @@ RSpec.describe User, type: :model do
       end
     end
 
-    xcontext "when an existing user attributes is supplied" do
+    context "when an existing user attributes is supplied" do
       before(:each) do
         user.save
       end
 
       it "doesn't change the count of the User records" do
         expect do
-          User.find_or_create_user(user_attributes)
+          User.find_or_create_user(
+            user_attributes.merge(id: user_attributes[:fb_id])
+          )
         end.to change(User, :count).by 0
       end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161015103413) do
+ActiveRecord::Schema.define(version: 20161018111235) do
 
   create_table "expired_tokens", force: :cascade do |t|
     t.string   "token"
@@ -56,13 +56,11 @@ ActiveRecord::Schema.define(version: 20161015103413) do
 
   create_table "users", force: :cascade do |t|
     t.string   "email"
-    t.string   "username"
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "fb_id"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.integer  "user_type",  default: 0
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.integer  "user_type",    default: 0
+    t.string   "kit_id"
+    t.string   "phone_number"
   end
 
 end
