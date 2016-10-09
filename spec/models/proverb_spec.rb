@@ -51,6 +51,7 @@ RSpec.describe Proverb, type: :model do
           result = Proverb.all
           expect(result.count).to be 2
           expect(result.first).to eql @proverb1
+          expect(result.second).to eql @proverb2
         end
       end
     end
@@ -63,13 +64,6 @@ RSpec.describe Proverb, type: :model do
           result = Proverb.joins(:tags).filter_tag({tag: 'joy'}).all
           expect(result.count).to be 1
           expect(result.first).to eql @proverb2
-        end
-      end
-
-      context "when not present" do
-        it "returns all proverbs" do
-          result = Proverb.joins(:tags).all
-          expect(result).to be_empty
         end
       end
     end
@@ -106,6 +100,13 @@ RSpec.describe Proverb, type: :model do
 
     describe ".filter_offset" do
       context "when present" do
+        it "returns the default" do
+          result = Proverb.filter_offset({offset: '1'}).all
+          expect(result.size).to eq 1
+          expect(result[0]).to eq(@proverb2)
+        end
+      end
+      context "when not present" do
         it "returns the default" do
           result = Proverb.all
           expect(result.size).to be 2
@@ -147,7 +148,7 @@ RSpec.describe Proverb, type: :model do
     end
     describe "offset" do
       context "when valid" do
-        it "updates field to nil" do
+        it "returns field value" do
           params = {offset: '10'}
           expect(Proverb.sanitize_search_params(params)[:offset]).to eql "10"
         end

@@ -54,9 +54,9 @@ class Proverb < ActiveRecord::Base
     end
   end
 
-  scope :filter_language, ->(args) { where("language LIKE ?", args[:language])}
-  scope :filter_tag, -> (args) { where('tags.name LIKE ?', args[:tag])}
+  scope :filter_language, -> (args) { where("language LIKE ?", args[:language]) }
+  scope :filter_tag, -> (args) { where('tags.name LIKE ?', args[:tag]) }
   scope :filter_order, -> (args) { order("#{args[:order]} #{args[:direction]}") }
-  scope :filter_limit, -> (args) { limit(args[:limit] || 20)}
-  scope :filter_offset, -> (args) { offset(args[:offset] || 0)}
+  scope :filter_limit, -> (args) { limit(args[:limit] || 20) }
+  scope :filter_offset, -> (args) { offset(args[:offset] || 0) }
 end
