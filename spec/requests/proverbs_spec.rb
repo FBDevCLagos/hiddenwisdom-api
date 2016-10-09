@@ -12,14 +12,14 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
       proverb = create(:proverb, language: "english")
       tag = create(:tag, name: "wisdom")
       create(:tagging, proverb: proverb, tag: tag)
-      translation = create(:proverb, root_id: proverb.id)
+      result = create(:proverb, root_id: proverb.id)
 
       get "/api/v1/proverbs", {}, valid_session
-      result = proverb.attributes
-      expect(JSON.parse(response.body)["proverbs"][0]["body"]).to eq(result["body"])
-      expect(JSON.parse(response.body)["proverbs"][0]["language"]).to eq(result["language"])
-      expect(JSON.parse(response.body)["proverbs"][0]["translations"][0]["body"]).to eq(translation.body)
-      expect(JSON.parse(response.body)["proverbs"][0]["translations"][0]["language"]).to eq(translation.language)
+      translation = proverb.attributes
+      expect(JSON.parse(response.body)["proverbs"][0]["body"]).to eq(result.body)
+      expect(JSON.parse(response.body)["proverbs"][0]["language"]).to eq(result.language)
+      expect(JSON.parse(response.body)["proverbs"][0]["translations"][0]["body"]).to eq(translation["body"])
+      expect(JSON.parse(response.body)["proverbs"][0]["translations"][0]["language"]).to eq(translation["language"])
       expect(response).to have_http_status(200)
     end
 
