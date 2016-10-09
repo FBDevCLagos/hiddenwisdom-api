@@ -1,4 +1,5 @@
 require "rails_helper"
+require "support/shared_examples/account_kit_authentication"
 
 RSpec.describe "User Authentication", type: :request do
   context "when trying to create a user" do
@@ -35,6 +36,28 @@ RSpec.describe "User Authentication", type: :request do
         expect(response).to have_http_status(401)
         expect(json["token"]).to be_nil
         expect(json["error"]).to eql("The access token could not be decrypted")
+      end
+    end
+  end
+
+  context "using account_kit" do
+    let(:valid_code) { "35df78934565" }
+    let(:invalid_code) { "54324ty5633" }
+
+    context "when access_code is valid" do
+      context "and authentication_type is phone" do
+        it_behaves_like "a valid account_kit_authentication_with", :phone
+      end
+
+      context "and authentication_type is email" do
+        it_behaves_like "a valid account_kit_authentication_with", :email
+      end
+    end
+
+    context "when access_code is invalid" do
+      it "responds with a 400 http status code" do
+        post api_v1_auth_login_path, kit_access_code: invalid_code
+        expect(response).to have_http_status(400)
       end
     end
   end

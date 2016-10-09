@@ -17,7 +17,7 @@ RSpec.describe User, type: :model do
       end
     end
 
-    context "when an existing user attributes is supplied" do
+    xcontext "when an existing user attributes is supplied" do
       before(:each) do
         user.save
       end
