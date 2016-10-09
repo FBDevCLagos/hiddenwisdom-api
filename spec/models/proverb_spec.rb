@@ -77,8 +77,8 @@ RSpec.describe Proverb, type: :model do
     describe ".filter_order" do
       context "when present" do
         it 'returns proverbs with the given order' do
-          @proverb2.update({language: 'igbo'})
-          result = Proverb.filter_order({language: 'igbo'}).all
+          @proverb1.update({language: 'igbo'})
+          result = Proverb.filter_order({order: 'language'}).all
           expect(result.size).to be 2
           expect(result.first).to eql @proverb2
           expect(result.second).to eql @proverb1
@@ -126,6 +126,90 @@ RSpec.describe Proverb, type: :model do
       it "returns randomize results" do
         result = Proverb.paginate({direction: 'random'})
         expect(result.size).to be 2
+      end
+    end
+  end
+
+  describe ".sanitize_search_params" do
+    describe "limit" do
+      context "when valid" do
+        it "updates field to nil" do
+          params = {limit: '10'}
+          expect(Proverb.sanitize_search_params(params)[:limit]).to eql "10"
+        end
+      end
+      context "when invalid" do
+        it "updates field to nil" do
+          params = {limit: 'something'}
+          expect(Proverb.sanitize_search_params(params)[:limit]).to be_nil
+        end
+      end
+    end
+    describe "offset" do
+      context "when valid" do
+        it "updates field to nil" do
+          params = {offset: '10'}
+          expect(Proverb.sanitize_search_params(params)[:offset]).to eql "10"
+        end
+      end
+      context "when invalid" do
+        it "updates field to nil" do
+          params = {offset: 'something'}
+          expect(Proverb.sanitize_search_params(params)[:offset]).to be_nil
+        end
+      end
+    end
+
+    context "tag" do
+      it "changes value to lower case and appends wildcard matchers" do
+        params = {tag: 'JOY'}
+        expect(Proverb.sanitize_search_params(params)[:tag]).to eql("%joy%")
+      end
+    end
+
+    context "language" do
+      it "changes value to lower case and appends wildcard matchers" do
+        params = {language: 'IGBO'}
+        expect(Proverb.sanitize_search_params(params)[:language]).to eql("%igbo%")
+      end
+    end
+  end
+
+  describe ".sanitize_order_by" do
+    context "when order by is valid" do
+      it "appends proverbs. to it" do
+        params = {order: 'language', direction: 'asc'}
+        expect(Proverb.sanitize_order_by(params)).to eql({order: 'proverbs.language', direction: 'asc'})
+      end
+    end
+
+    context "when order by is invalid" do
+      it "updates it with default and append proverbs" do
+        params = {order: 'something', direction: 'asc'}
+        expect(Proverb.sanitize_order_by(params)).to eql({order: 'proverbs.id', direction: 'asc'})
+      end
+    end
+  end
+
+  describe ".sanitize_direction" do
+    context "when direction is random" do
+      it "updates the params and removes the order field" do
+        params = {direction: 'random', order: 'id' }
+        expect(Proverb.sanitize_direction(params)).to eql({direction: 'RANDOM()', order: ''})
+      end
+    end
+
+    context "when direction is not valid" do
+      it "updates the params with the default direction" do
+        params = {direction: 'something'}
+        expect(Proverb.sanitize_direction(params)).to eql({direction: 'desc'})
+      end
+    end
+
+    context "when direction is valid" do
+      it "doesn't modify the args" do
+        params = {direction: 'asc'}
+        expect(Proverb.sanitize_direction(params)).to eql(params)
       end
     end
   end
