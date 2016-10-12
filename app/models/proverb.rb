@@ -6,10 +6,6 @@ class Proverb < ActiveRecord::Base
   validates :body, :user, presence: true
   translates :body
 
-  # def translations
-  #   Proverb.where("root_id = #{id} OR id = #{root_id}").where.not(id: id)
-  # end
-
   #Getter and Setter for all_tags vertial attribute
   def all_tags=(proverb_tags)
     tag_names = proverb_tags.collect{|tag_name| tag_name.strip.downcase}.uniq
@@ -24,7 +20,7 @@ class Proverb < ActiveRecord::Base
 
   scope :search, lambda { |params = {}|
     tag = params[:tag].downcase if params[:tag]
-    # language = params[:language].downcase if params[:language]
+    locale = params[:locale].downcase if params[:locale]
     ord = params["random"] ? "RANDOM()" : "id #{params[:direction]}"
     set_order = ord == "id " ? "id desc" : ord
     Proverb.joins(:tags).where(
