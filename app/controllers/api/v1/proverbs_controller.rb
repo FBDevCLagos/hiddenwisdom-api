@@ -50,7 +50,7 @@ module Api
       end
 
       def proverb_params
-        params.require(:proverb).permit(:body, :root_id, all_tags: [])
+        params.require(:proverb).permit(:body, :root_id, :locale, all_tags: [])
       end
 
       # def valid_translation?

@@ -121,6 +121,7 @@ RSpec.describe Proverb, type: :model do
     end
   end
 
+<<<<<<< 3e136bfda3b4546150acfd4c6ce82165cce4eda3
   describe ".sanitize_search_params" do
     describe "limit" do
       context "when valid" do
@@ -196,6 +197,8 @@ RSpec.describe Proverb, type: :model do
         expect(Proverb.sanitize_direction(params)).to eql({direction: 'desc'})
       end
     end
+=======
+>>>>>>> fix failing tests
 
     context "when direction is valid" do
       it "doesn't modify the args" do
