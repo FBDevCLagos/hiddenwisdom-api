@@ -21,23 +21,42 @@ class Proverb < ActiveRecord::Base
     self.tags.map(&:name).join(", ")
   end
 
-  scope :search, lambda { |params = {}|
-    tag = params[:tag].downcase if params[:tag]
-    language = params[:language].downcase if params[:language]
-    ord = params["random"] ? "RANDOM()" : "id #{params[:direction]}"
-    set_order = ord == "id " ? "proverbs.id desc" : ord
-    Proverb.select("proverbs.*, #{ord}").joins(:tags).where(
-      "tags.name LIKE ? and lower(language) LIKE ?",
-      "%#{tag}%",
-      "%#{language}%"
-    ).order(set_order).uniq
-  }
-
   def self.paginate(params)
-    limit = params[:limit] ? params[:limit] : 20
-    page = params[:page] ? params[:page] : 0
-    # offset = limit.to_i * (page.to_i - 1)
-    offset = page == 0 ? 0 : (page.to_i - 1) * limit.to_i
-    search(params).limit(limit).offset(offset)
+    params = sanitize_search_params(params)
+    query = self.eager_load(:tags)
+    query = query.filter_language(params) if params[:language]
+    query = query.filter_tag(params) if params[:tag]
+    query.filter_order(params).filter_limit(params).filter_offset(params)
   end
+
+  def self.sanitize_search_params(params)
+    params[:limit] = nil unless params[:limit].to_i > 0
+    params[:offset] = nil unless params[:offset].to_i > 0
+    params[:tag] = "%#{params[:tag].downcase}%" if params[:tag]
+    params[:language] = "%#{params[:language].downcase}%" if params[:language]
+    sanitize_order_by(params)
+  end
+
+  def self.sanitize_order_by(params)
+    order_by = (self.column_names.include? params[:order]) ? params[:order] : 'id'
+    params[:order] = "proverbs.#{order_by}"
+    sanitize_direction(params)
+  end
+
+  def self.sanitize_direction(params)
+    params.tap do |args|
+      if args[:direction] == 'random'
+        args[:direction] = 'RANDOM()'
+        args[:order] = ''
+      elsif !%w(desc asc).include? args[:direction]
+        args[:direction] = 'desc'
+      end
+    end
+  end
+
+  scope :filter_language, -> (args) { where("language LIKE ?", args[:language]) }
+  scope :filter_tag, -> (args) { where('tags.name LIKE ?', args[:tag]) }
+  scope :filter_order, -> (args) { order("#{args[:order]} #{args[:direction]}") }
+  scope :filter_limit, -> (args) { limit(args[:limit] || 20) }
+  scope :filter_offset, -> (args) { offset(args[:offset] || 0) }
 end
