@@ -18,30 +18,19 @@ class Proverb < ActiveRecord::Base
     self.tags.map(&:name).join(", ")
   end
 
-  scope :search, lambda { |params = {}|
-    tag = params[:tag].downcase if params[:tag]
-    locale = params[:locale].downcase if params[:locale]
-    ord = params["random"] ? "RANDOM()" : "id #{params[:direction]}"
-    set_order = ord == "id " ? "id desc" : ord
-    Proverb.joins(:tags).where(
-      "tags.name LIKE ?",
-      "%#{tag}%",
-    ).order(set_order).uniq
-  }
-
   def self.paginate(params)
     params = sanitize_search_params(params)
-    query = self.eager_load(:tags)
-    query = query.filter_language(params) if params[:language]
+    query = with_translations(I18n.locale).eager_load(:tags)
     query = query.filter_tag(params) if params[:tag]
+    query = query.filter_status(params) if params[:status]
     query.filter_order(params).filter_limit(params).filter_offset(params)
   end
 
   def self.sanitize_search_params(params)
     params[:limit] = nil unless params[:limit].to_i > 0
     params[:offset] = nil unless params[:offset].to_i > 0
+    params[:status] = nil unless params[:status].in? %w{approved unapproved}
     params[:tag] = "%#{params[:tag].downcase}%" if params[:tag]
-    params[:language] = "%#{params[:language].downcase}%" if params[:language]
     sanitize_order_by(params)
   end
 
@@ -62,7 +51,7 @@ class Proverb < ActiveRecord::Base
     end
   end
 
-  scope :filter_language, -> (args) { where("language LIKE ?", args[:language]) }
+  scope :filter_status, -> (args) { where(status: args[:status]) }
   scope :filter_tag, -> (args) { where('tags.name LIKE ?', args[:tag]) }
   scope :filter_order, -> (args) { order("#{args[:order]} #{args[:direction]}") }
   scope :filter_limit, -> (args) { limit(args[:limit] || 20) }
