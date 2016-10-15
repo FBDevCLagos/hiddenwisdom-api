@@ -16,34 +16,10 @@ RSpec.describe Proverb, type: :model do
   it { is_expected.to respond_to(:root) }
   it { is_expected.to respond_to(:translations) }
 
-  it "should return a root for translation" do
-    expect(translation.root).to eq proverb
-  end
-
   describe "search filters" do
     before(:each) do
       @proverb1 = create(:proverb, body: 'hello')
       @proverb2 = create(:proverb, body: 'world')
-    end
-
-    describe ".filter_language" do
-      context "when present" do
-        it 'returns proverbs with the language' do
-          @proverb2.update(language: 'igbo')
-          result = Proverb.filter_language({language: 'igbo'}).all
-          expect(result.count).to be 1
-          expect(result.first).to eql @proverb2
-        end
-      end
-
-      context "when not present" do
-        it 'returns all proverbs' do
-          result = Proverb.all
-          expect(result.count).to be 2
-          expect(result.first).to eql @proverb1
-          expect(result.second).to eql @proverb2
-        end
-      end
     end
 
     describe ".filter_tag" do
@@ -61,8 +37,8 @@ RSpec.describe Proverb, type: :model do
     describe ".filter_order" do
       context "when present" do
         it 'returns proverbs with the given order' do
-          @proverb1.update({language: 'igbo'})
-          result = Proverb.filter_order({order: 'language'}).all
+          @proverb2.update({status: 'approved'})
+          result = Proverb.filter_order({order: 'status'}).all
           expect(result.size).to be 2
           expect(result.first).to eql @proverb2
           expect(result.second).to eql @proverb1
@@ -121,7 +97,6 @@ RSpec.describe Proverb, type: :model do
     end
   end
 
-<<<<<<< 3e136bfda3b4546150acfd4c6ce82165cce4eda3
   describe ".sanitize_search_params" do
     describe "limit" do
       context "when valid" do
@@ -158,20 +133,13 @@ RSpec.describe Proverb, type: :model do
         expect(Proverb.sanitize_search_params(params)[:tag]).to eql("%joy%")
       end
     end
-
-    context "language" do
-      it "changes value to lower case and appends wildcard matchers" do
-        params = {language: 'IGBO'}
-        expect(Proverb.sanitize_search_params(params)[:language]).to eql("%igbo%")
-      end
-    end
   end
 
   describe ".sanitize_order_by" do
     context "when order by is valid" do
       it "appends proverbs. to it" do
-        params = {order: 'language', direction: 'asc'}
-        expect(Proverb.sanitize_order_by(params)).to eql({order: 'proverbs.language', direction: 'asc'})
+        params = {order: 'status', direction: 'asc'}
+        expect(Proverb.sanitize_order_by(params)).to eql({order: 'proverbs.status', direction: 'asc'})
       end
     end
 
@@ -197,8 +165,6 @@ RSpec.describe Proverb, type: :model do
         expect(Proverb.sanitize_direction(params)).to eql({direction: 'desc'})
       end
     end
-=======
->>>>>>> fix failing tests
 
     context "when direction is valid" do
       it "doesn't modify the args" do

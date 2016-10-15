@@ -31,7 +31,7 @@ module Helpers
   def proverbs_with_empty_translations_params
     { proverb: {
         body: "A dead person shall have all the sleep necessary.",
-        language: "en",
+        locale: "en",
         all_tags: ["peace", "love", "sleeep"],
         translations: [""]
       }}
@@ -40,7 +40,7 @@ module Helpers
   def proverbs_without_translations_params
     { proverb: {
         body: "A dead person shall have all the sleep necessary.",
-        language: "en",
+        locale: "en",
         all_tags: ["peace", "love", "sleeep"],
       }}
   end
