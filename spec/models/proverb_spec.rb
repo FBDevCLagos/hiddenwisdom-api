@@ -13,7 +13,6 @@ RSpec.describe Proverb, type: :model do
 
   let(:proverb) { create(:proverb) }
 
-  it { is_expected.to respond_to(:root) }
   it { is_expected.to respond_to(:translations) }
 
   describe "search filters" do

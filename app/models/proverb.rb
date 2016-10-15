@@ -1,6 +1,5 @@
 class Proverb < ActiveRecord::Base
   belongs_to :user
-  belongs_to :root, class_name: "Proverb", foreign_key: "root_id"
   has_many :taggings
   has_many :tags, through: :taggings
   validates :body, :user, presence: true

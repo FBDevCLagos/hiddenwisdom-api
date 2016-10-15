@@ -49,7 +49,7 @@ module Api
       end
 
       def proverb_params
-        params.require(:proverb).permit(:body, :root_id, :locale, all_tags: [])
+        params.require(:proverb).permit(:body, :locale, all_tags: [])
       end
 
 
