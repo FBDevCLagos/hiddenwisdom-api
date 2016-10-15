@@ -63,6 +63,17 @@ RSpec.describe Proverb, type: :model do
       end
     end
 
+    describe ".filter_status" do
+      context "when present" do
+        it "returns the number of proverbs required" do
+          @proverb1.update({status: 'approved'})
+          result = Proverb.filter_status({status: "approved"})
+          expect(result.size).to be 1
+          expect(result.first).to eql(@proverb1)
+        end
+      end
+    end
+
     describe ".filter_offset" do
       context "when present" do
         it "returns the default" do
@@ -97,6 +108,21 @@ RSpec.describe Proverb, type: :model do
   end
 
   describe ".sanitize_search_params" do
+    describe "status" do
+      context "when valid" do
+        it "updates field to nil" do
+          params = {status: 'approved'}
+          expect(Proverb.sanitize_search_params(params)[:status]).to eql "approved"
+        end
+      end
+      context "when invalid" do
+        it "updates field to nil" do
+          params = {status: 'something'}
+          expect(Proverb.sanitize_search_params(params)[:status]).to be_nil
+        end
+      end
+    end
+
     describe "limit" do
       context "when valid" do
         it "updates field to nil" do
