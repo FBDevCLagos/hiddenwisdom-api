@@ -41,15 +41,15 @@ user = User.create({
 
 proverbs = [
   {body: "Unity is strength", locale: "en", status: "approved", user: user, all_tags: tags[1..rand(tags.length)]},
-  {body: "Gidi gidi bụ ugwu eze.",locale: "ig", status: "approved", user: user, all_tags: tags[1..rand(tags.length)]},
+  {body: "Gidi gidi bụ ugwu eze.",locale: "ib", status: "approved", user: user, all_tags: tags[1..rand(tags.length)]},
 
 
   {body: "Make hay while the sun shines",locale: "en", status: "approved", user: user, all_tags: tags[1..rand(tags.length)]},
-  {body: "Chọọ ewu ojii ka chi dị",locale: "ig", status: "approved", user: user, all_tags: tags[1..rand(tags.length)]},
+  {body: "Chọọ ewu ojii ka chi dị",locale: "ib", status: "approved", user: user, all_tags: tags[1..rand(tags.length)]},
 
 
   {body: "Fools rush in where angels fear to tread.",locale: "en", user: user, all_tags: tags[1..rand(tags.length)]},
-  {body: "Ihe ehi hụrụ gbalaba oso ka okuku huru na-atụ onu",locale: "ig", status: "approved", user: user, all_tags: tags[1..rand(tags.length)]},
+  {body: "Ihe ehi hụrụ gbalaba oso ka okuku huru na-atụ onu",locale: "ib", status: "approved", user: user, all_tags: tags[1..rand(tags.length)]},
 
 
   {body: "Be forward-looking; let go of the past",locale: "en", status: "approved", user: user, all_tags: tags[1..rand(tags.length)]},
@@ -70,7 +70,7 @@ proverbs.in_groups_of(2, false) do |grp|
 end
 
 root = Proverb.create({body: "A dead person shall have all the sleep necessary.", locale: "en", status: "approved", user: user, all_tags: tags[1..rand(tags.length)]})
-Proverb.create({body: "Ura ga-eju onye nwuru anwu afo", locale: "ig", user: user, root: root, all_tags: tags[1..rand(tags.length)]})
+Proverb.create({body: "Ura ga-eju onye nwuru anwu afo", locale: "ib", user: user, root: root, all_tags: tags[1..rand(tags.length)]})
 Proverb.create({body: "eni to ku, o ma sun dada", locale: "yb", user: user, root: root, all_tags: tags[1..rand(tags.length)]})
 
 puts "#{Proverb.count} proverbs created"
