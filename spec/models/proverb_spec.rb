@@ -3,7 +3,6 @@ require "rails_helper"
 RSpec.describe Proverb, type: :model do
   describe "validation" do
     it { is_expected.to validate_presence_of(:body) }
-    it { is_expected.to validate_presence_of(:language) }
     it { should validate_presence_of :user }
   end
 
@@ -13,47 +12,13 @@ RSpec.describe Proverb, type: :model do
   end
 
   let(:proverb) { create(:proverb) }
-  let(:translation) { create(:proverb, root: proverb) }
 
-  it { is_expected.to respond_to(:root) }
   it { is_expected.to respond_to(:translations) }
-
-  it "should return a translation for proverb" do
-    expect(proverb.translations).to eq [translation]
-  end
-
-  it "should return a translation for translation" do
-    expect(translation.translations).to eq [proverb]
-  end
-
-  it "should return a root for translation" do
-    expect(translation.root).to eq proverb
-  end
 
   describe "search filters" do
     before(:each) do
       @proverb1 = create(:proverb, body: 'hello')
       @proverb2 = create(:proverb, body: 'world')
-    end
-
-    describe ".filter_language" do
-      context "when present" do
-        it 'returns proverbs with the language' do
-          @proverb2.update(language: 'igbo')
-          result = Proverb.filter_language({language: 'igbo'}).all
-          expect(result.count).to be 1
-          expect(result.first).to eql @proverb2
-        end
-      end
-
-      context "when not present" do
-        it 'returns all proverbs' do
-          result = Proverb.all
-          expect(result.count).to be 2
-          expect(result.first).to eql @proverb1
-          expect(result.second).to eql @proverb2
-        end
-      end
     end
 
     describe ".filter_tag" do
@@ -71,8 +36,8 @@ RSpec.describe Proverb, type: :model do
     describe ".filter_order" do
       context "when present" do
         it 'returns proverbs with the given order' do
-          @proverb1.update({language: 'igbo'})
-          result = Proverb.filter_order({order: 'language'}).all
+          @proverb2.update({status: 'approved'})
+          result = Proverb.filter_order({order: 'status'}).all
           expect(result.size).to be 2
           expect(result.first).to eql @proverb2
           expect(result.second).to eql @proverb1
@@ -92,6 +57,17 @@ RSpec.describe Proverb, type: :model do
       context "when present" do
         it "returns the number of proverbs required" do
           result = Proverb.filter_limit({limit: 1})
+          expect(result.size).to be 1
+          expect(result.first).to eql(@proverb1)
+        end
+      end
+    end
+
+    describe ".filter_status" do
+      context "when present" do
+        it "returns the number of proverbs required" do
+          @proverb1.update({status: 'approved'})
+          result = Proverb.filter_status({status: "approved"})
           expect(result.size).to be 1
           expect(result.first).to eql(@proverb1)
         end
@@ -132,6 +108,21 @@ RSpec.describe Proverb, type: :model do
   end
 
   describe ".sanitize_search_params" do
+    describe "status" do
+      context "when valid" do
+        it "updates field to nil" do
+          params = {status: 'approved'}
+          expect(Proverb.sanitize_search_params(params)[:status]).to eql "approved"
+        end
+      end
+      context "when invalid" do
+        it "updates field to nil" do
+          params = {status: 'something'}
+          expect(Proverb.sanitize_search_params(params)[:status]).to be_nil
+        end
+      end
+    end
+
     describe "limit" do
       context "when valid" do
         it "updates field to nil" do
@@ -167,20 +158,13 @@ RSpec.describe Proverb, type: :model do
         expect(Proverb.sanitize_search_params(params)[:tag]).to eql("%joy%")
       end
     end
-
-    context "language" do
-      it "changes value to lower case and appends wildcard matchers" do
-        params = {language: 'IGBO'}
-        expect(Proverb.sanitize_search_params(params)[:language]).to eql("%igbo%")
-      end
-    end
   end
 
   describe ".sanitize_order_by" do
     context "when order by is valid" do
       it "appends proverbs. to it" do
-        params = {order: 'language', direction: 'asc'}
-        expect(Proverb.sanitize_order_by(params)).to eql({order: 'proverbs.language', direction: 'asc'})
+        params = {order: 'status', direction: 'asc'}
+        expect(Proverb.sanitize_order_by(params)).to eql({order: 'proverbs.status', direction: 'asc'})
       end
     end
 
