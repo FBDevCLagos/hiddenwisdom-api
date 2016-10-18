@@ -1,7 +1,7 @@
 module Api
   module V1
     class ProverbsController < ApplicationController
-      before_action :set_proverb, only: [:show, :update, :destroy, :translations]
+      before_action :set_proverb, only: [:show, :update, :destroy, :translations, :approve]
       before_action :check_tags, only: [:create]
       before_action :authenticate, except: [:index, :show]
       before_action :set_locale
@@ -36,6 +36,11 @@ module Api
       def destroy
         @proverb.destroy
         head :no_content
+      end
+
+      def approve
+        @proverb.update_attribute(:status, "approved")
+        render json: @proverb, status: 200
       end
 
       private
