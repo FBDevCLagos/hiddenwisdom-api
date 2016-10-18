@@ -2,9 +2,11 @@ require "rails_helper"
 
 RSpec.describe Api::V1::ProverbsController, type: :request do
   before(:each) { I18n.locale = :en }
-  let(:user) { create(:user, user_type: 1) }
-  let(:valid_session) { login(user) }
+  let(:user) { create(:user) }
+  let!(:valid_session) { login(user) }
 
+  let!(:admin) { create(:user, user_type: 2) }
+  let(:admin_session) { login(admin) }
   let(:valid_attributes) { attributes_for(:proverb) }
   let(:invalid_attributes) { attributes_for(:proverb, :invalid) }
 
@@ -198,7 +200,7 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
           post(
             "/api/v1/en/proverbs/",
             proverbs_with_translations_params,
-            valid_session
+            admin_session
           )
         end.to change(Proverb, :count).by(1)
         expect(response).to have_http_status(201)
@@ -208,7 +210,7 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
         post(
           "/api/v1/en/proverbs/",
           proverbs_with_translations_params,
-          valid_session
+          admin_session
         )
         expect(assigns(:proverb)).to be_a(Proverb)
         expect(assigns(:proverb)).to be_persisted
@@ -222,7 +224,7 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
       it "creates translations in translations array" do
         post(
           "/api/v1/en/proverbs/", proverbs_with_translations_params,
-          valid_session
+          admin_session
         )
         expect(assigns(:proverb)).to be_persisted
         expect(assigns(:proverb).translations.size).to eq 1
@@ -232,7 +234,7 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
 
     context "with invalid params" do
       it "assigns a newly created but unsaved proverb as @proverb" do
-        post "/api/v1/en/proverbs/", { proverb: invalid_attributes.merge!(all_tags: ["life"]) }, valid_session
+        post "/api/v1/en/proverbs/", { proverb: invalid_attributes.merge!(all_tags: ["life"]) }, admin_session
         expect(assigns(:proverb)).to be_a_new(Proverb)
       end
     end
@@ -242,7 +244,7 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
         post(
           "/api/v1/en/proverbs/",
           { proverb: valid_attributes.merge!(all_tags: "wisdom, life") },
-          valid_session
+          admin_session
         )
         expect(JSON.parse(response.body)["tag_error"]).to eq "tags must be in an array"
       end
@@ -255,7 +257,7 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
 
       it "updates the requested proverb" do
         proverb = create(:proverb)
-        put "/api/v1/en/proverbs/#{proverb.id}", { proverb: new_attributes }, valid_session
+        put "/api/v1/en/proverbs/#{proverb.id}", { proverb: new_attributes }, admin_session
         proverb.reload
         expect(assigns(:proverb).body).to eq("This is a new proverb body")
         expect(response).to have_http_status(200)
@@ -263,7 +265,7 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
 
       it "assigns the requested proverb as @proverb" do
         proverb = create(:proverb)
-        put "/api/v1/en/proverbs/#{proverb.id}", { proverb: valid_attributes }, valid_session
+        put "/api/v1/en/proverbs/#{proverb.id}", { proverb: valid_attributes }, admin_session
         expect(assigns(:proverb)).to eq(proverb)
         expect(response).to have_http_status(200)
       end
@@ -272,7 +274,7 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
     context "with invalid params" do
       it "assigns the proverb as @proverb" do
         proverb = create(:proverb)
-        put "/api/v1/en/proverbs/#{proverb.id}", { proverb: invalid_attributes }, valid_session
+        put "/api/v1/en/proverbs/#{proverb.id}", { proverb: invalid_attributes }, admin_session
         expect(assigns(:proverb)).to eq(proverb)
         expect(response).to have_http_status(422)
       end
@@ -283,41 +285,33 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
     it "destroys the requested proverb" do
       proverb = create(:proverb)
       expect do
-        delete "/api/v1/en/proverbs/#{proverb.id}", {}, valid_session
+        delete "/api/v1/en/proverbs/#{proverb.id}", {}, admin_session
       end.to change(Proverb, :count).by(-1)
       expect(response).to have_http_status(204)
     end
 
     it "redirects to the proverbs list" do
       proverb = create(:proverb)
-      delete "/api/v1/en/proverbs/#{proverb.id}", {}, valid_session
+      delete "/api/v1/en/proverbs/#{proverb.id}", {}, admin_session
       expect(response).to have_http_status(204)
     end
   end
 
   describe "approve" do
     let!(:proverb) { create(:proverb) }
-    context "when user is a moderator" do
-      it " updates the status of the proverb" do
-        get "/api/v1/en/proverbs/#{proverb.id}/approve", {}, valid_session
-        expect(JSON.parse(response.body)["status"]).to eq "approved"
-      end
-    end
 
     context "when user is an admin" do
       let(:user_admin) { create(:user, user_type: 2)}
       let(:valid_admin_session) { login(user_admin) }
       it " updates the status of the proverb" do
-        get "/api/v1/en/proverbs/#{proverb.id}/approve", {}, valid_admin_session
+        get "/api/v1/en/proverbs/#{proverb.id}/approve", {}, admin_session
         expect(JSON.parse(response.body)["status"]).to eq "approved"
       end
     end
 
     context "when user is a regular user" do
-      let(:user_regular) { create(:user)}
-      let(:valid_regular_session) { login(user_regular) }
-      it " updates the status of the proverb" do
-        get "/api/v1/en/proverbs/#{proverb.id}/approve", {}, valid_regular_session
+      it "returns an authorized status code" do
+        get "/api/v1/en/proverbs/#{proverb.id}/approve", {}, valid_session
         expect(response).to have_http_status(403)
       end
     end

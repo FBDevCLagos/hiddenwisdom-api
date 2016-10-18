@@ -11,7 +11,6 @@ class Ability
     alias_action :create, :update, to: :regular_user_crud
 
     can :read, Proverb
-
     if user.admin?
       can :manage, :all
     end
