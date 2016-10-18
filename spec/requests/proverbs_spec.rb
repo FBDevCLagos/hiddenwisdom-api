@@ -2,8 +2,8 @@ require "rails_helper"
 
 RSpec.describe Api::V1::ProverbsController, type: :request do
   before(:each) { I18n.locale = :en }
-  let(:user) { create(:user) }
-  let!(:valid_session) { login(user) }
+  let(:user) { create(:user, user_type: 1) }
+  let(:valid_session) { login(user) }
 
   let(:valid_attributes) { attributes_for(:proverb) }
   let(:invalid_attributes) { attributes_for(:proverb, :invalid) }
@@ -293,5 +293,34 @@ RSpec.describe Api::V1::ProverbsController, type: :request do
       delete "/api/v1/en/proverbs/#{proverb.id}", {}, valid_session
       expect(response).to have_http_status(204)
     end
+  end
+
+  describe "approve" do
+    let!(:proverb) { create(:proverb) }
+    context "when user is a moderator" do
+      it " updates the status of the proverb" do
+        get "/api/v1/en/proverbs/#{proverb.id}/approve", {}, valid_session
+        expect(JSON.parse(response.body)["status"]).to eq "approved"
+      end
+    end
+
+    context "when user is an admin" do
+      let(:user_admin) { create(:user, user_type: 2)}
+      let(:valid_admin_session) { login(user_admin) }
+      it " updates the status of the proverb" do
+        get "/api/v1/en/proverbs/#{proverb.id}/approve", {}, valid_admin_session
+        expect(JSON.parse(response.body)["status"]).to eq "approved"
+      end
+    end
+
+    context "when user is a regular user" do
+      let(:user_regular) { create(:user)}
+      let(:valid_regular_session) { login(user_regular) }
+      it " updates the status of the proverb" do
+        get "/api/v1/en/proverbs/#{proverb.id}/approve", {}, valid_regular_session
+        expect(response).to have_http_status(403)
+      end
+    end
+
   end
 end

@@ -5,6 +5,7 @@ module Api
       before_action :check_tags, only: [:create]
       before_action :authenticate, except: [:index, :show]
       before_action :set_locale
+      load_and_authorize_resource
 
       def index
         proverbs = Proverb.paginate(params)
