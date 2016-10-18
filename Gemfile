@@ -28,7 +28,6 @@ group :development, :test do
   gem "shoulda-matchers", "~> 3.1"
   gem "simplecov"
   gem "coveralls", require: false
-  gem "vcr"
   gem "webmock"
   gem "rubocop"
 end

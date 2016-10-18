@@ -198,7 +198,6 @@ GEM
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     unicode-display_width (1.1.1)
-    vcr (3.0.3)
     webmock (2.1.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -231,7 +230,6 @@ DEPENDENCIES
   simplecov
   spring
   sqlite3
-  vcr
   webmock
 
 RUBY VERSION

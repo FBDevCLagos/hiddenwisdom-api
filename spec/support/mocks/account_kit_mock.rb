@@ -21,14 +21,8 @@ module Mocks
     end
 
     def mock_account_kit_info(type)
-      mock_access_token
       allow_any_instance_of(Facebook::AccountKit::UserAccount).
         to receive(:fetch_user_info).and_return(send(type))
-    end
-
-    def mock_access_token
-      allow_any_instance_of(Facebook::AccountKit::TokenExchanger).
-        to receive(:fetch_access_token).and_return("")
     end
   end
 end

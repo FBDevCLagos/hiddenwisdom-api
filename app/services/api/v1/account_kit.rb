@@ -1,22 +1,19 @@
 module Api
   module V1
     class AccountKit
-      attr_reader :access_code
+      attr_reader :access_token
 
-      def initialize(access_code)
-        @access_code = access_code
+      def initialize(access_token)
+        @access_token = access_token
       end
 
       def get_message_and_status
-        token_exchanger = Facebook::AccountKit::TokenExchanger.new(access_code)
-
         begin
-          access_token = token_exchanger.fetch_access_token
           user_account = Facebook::AccountKit::UserAccount.new(access_token)
           user = User.find_or_create_user(user_account.fetch_user_info)
           return [{ token: get_token(user), user: user }, 200]
         rescue Facebook::AccountKit::InvalidRequest
-          return [{ error: "Invalid Access Code" }, "400"]
+          return [{ error: "Invalid Access Token" }, "400"]
         end
       end
 
