@@ -1,12 +1,14 @@
 class ApplicationController < ActionController::API
   include CanCan::ControllerAdditions
-
   rescue_from ActiveRecord::RecordNotFound do
     render json: { Error: "Resource not found" }, status: 404
   end
+  rescue_from CanCan::AccessDenied do
+    render json: { Error: " Tah!! You are not authorized" }, status: 403
+  end
 
   attr_reader :current_user, :token
-
+  helper_method :current_user
   def no_route_found
     found = { Error: "The end point you requested does not exist.",
               Debug: "Please check the documentation for existing end points" }

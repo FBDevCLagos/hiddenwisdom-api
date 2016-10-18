@@ -6,16 +6,14 @@ class Ability
     #
     user ||= User.new # guest user (not logged in)
 
-    alias_action :create, :update, :destroy, to: :moderate
+    alias_action :create, :update, :destroy, :approve, to: :moderate
 
     alias_action :create, :update, to: :regular_user_crud
 
     can :read, Proverb
-
     if user.admin?
       can :manage, :all
     end
-
     if user.moderator?
       can :moderate, Proverb
       can :manage, User, id: user.id
