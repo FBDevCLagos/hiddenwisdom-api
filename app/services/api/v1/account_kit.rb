@@ -12,7 +12,7 @@ module Api
           user_account = Facebook::AccountKit::UserAccount.new(access_token)
           user = User.find_or_create_user(user_account.fetch_user_info)
           return [{ token: get_token(user), user: user }, 200]
-        rescue Facebook::AccountKit::InvalidRequest
+        rescue
           return [{ error: "Invalid Access Token" }, "400"]
         end
       end
