@@ -23,9 +23,9 @@ module ProverbsApi
     config.i18n.fallbacks = true
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '*.{rb,yml}').to_s]
     config.middleware.insert_before 0, "Rack::Cors" do
-    allow do
-        origins '*'
-        resource '*', :headers => :any, :methods => [:get, :post, :put, :delete, :options]
+      allow do
+        origins "*"
+        resource "*", headers: :any, methods: [:get, :post, :put, :delete, :options]
       end
     end
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
@@ -39,8 +39,8 @@ module ProverbsApi
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.middleware.insert_before 0, "Rack::Cors" do
       allow do
-        origins '*'
-        resource '*', headers: :any, methods: [:get, :post, :options]
+        origins "*"
+        resource "*", headers: :any, methods: [:get, :post, :options]
       end
     end
     config.active_record.raise_in_transactional_callbacks = true

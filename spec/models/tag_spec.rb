@@ -1,8 +1,8 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe Tag, type: :model do
   describe "instance methods" do
-    it { is_expected.to respond_to :name}
+    it { is_expected.to respond_to :name }
   end
 
   describe "associations" do

@@ -3,5 +3,4 @@ FactoryGirl.define do
     # proverb
     tag
   end
-
 end
